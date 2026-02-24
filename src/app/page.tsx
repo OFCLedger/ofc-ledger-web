@@ -1,4 +1,4 @@
-import Logo from "@/components/Logo";
+import LogoHero from "@/components/LogoHero";
 
 const features = [
   {
@@ -27,27 +27,27 @@ export default function Home() {
   return (
     <main>
       {/* Hero */}
-      <section className="flex flex-col items-center justify-center px-6 pt-24 pb-16 text-center">
-        <Logo size={96} />
-        <h1 className="mt-8 text-5xl font-bold tracking-tight sm:text-6xl">
+      <section className="flex flex-col items-center justify-center px-4 pt-16 pb-12 text-center sm:px-6 sm:pt-24 sm:pb-16">
+        <LogoHero size={120} />
+        <h1 className="mt-6 text-4xl font-bold tracking-tight sm:mt-8 sm:text-6xl">
           OFC LEDGER
         </h1>
-        <p className="mt-4 text-xl text-[var(--color-muted)]">
+        <p className="mt-3 text-lg text-[var(--color-muted)] sm:mt-4 sm:text-xl">
           For grinders and gamblers.
         </p>
-        <button disabled className="btn-gold mt-10">
+        <button disabled className="btn-gold mt-8 sm:mt-10">
           Coming Soon
         </button>
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-5xl px-6 py-20">
-        <h2 className="mb-12 text-center text-3xl font-bold">Features</h2>
-        <div className="grid gap-6 sm:grid-cols-2">
+      <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-20">
+        <h2 className="mb-8 text-center text-2xl font-bold sm:mb-12 sm:text-3xl">Features</h2>
+        <div className="grid gap-4 sm:gap-6 sm:grid-cols-2">
           {features.map((f) => (
             <div key={f.title} className="card">
               <div className="mb-3 text-3xl">{f.icon}</div>
-              <h3 className="mb-2 text-xl font-semibold">{f.title}</h3>
+              <h3 className="mb-2 text-lg font-semibold sm:text-xl">{f.title}</h3>
               <p className="text-sm leading-relaxed">{f.description}</p>
             </div>
           ))}
@@ -55,12 +55,12 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-xl px-6 py-20 text-center">
-        <h2 className="mb-4 text-3xl font-bold">Join the Beta</h2>
-        <p className="mb-8 text-[var(--color-muted)]">
+      <section className="mx-auto max-w-xl px-4 py-12 text-center sm:px-6 sm:py-20">
+        <h2 className="mb-4 text-2xl font-bold sm:text-3xl">Join the Beta</h2>
+        <p className="mb-6 text-sm text-[var(--color-muted)] sm:mb-8 sm:text-base">
           Be the first to know when OFC Ledger launches.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <input
             type="email"
             placeholder="your@email.com"
