@@ -55,7 +55,8 @@ function parseCard(card: string) {
 type MatchResult = {
   wins: [number, number];
   foul: [boolean, boolean];
-  scores: [number, number];
+  headToHead: [number, number]; // rows + scoop only (for result line)
+  scores: [number, number]; // total net incl. royalties (for big number)
 };
 
 function computeMatch(players: PlayerData[]): MatchResult | null {
@@ -63,19 +64,25 @@ function computeMatch(players: PlayerData[]): MatchResult | null {
   const [p1, p2] = players;
 
   if (p1.analysis.isFoul && p2.analysis.isFoul)
-    return { wins: [0, 0], foul: [true, true], scores: [0, 0] };
-  if (p1.analysis.isFoul)
+    return { wins: [0, 0], foul: [true, true], headToHead: [0, 0], scores: [0, 0] };
+  if (p1.analysis.isFoul) {
+    const h2h = -6;
     return {
       wins: [0, 3],
       foul: [true, false],
-      scores: [-6 - p2.analysis.royalties, 6 + p2.analysis.royalties],
+      headToHead: [h2h, -h2h],
+      scores: [h2h - p2.analysis.royalties, -h2h + p2.analysis.royalties],
     };
-  if (p2.analysis.isFoul)
+  }
+  if (p2.analysis.isFoul) {
+    const h2h = 6;
     return {
       wins: [3, 0],
       foul: [false, true],
-      scores: [6 + p1.analysis.royalties, -6 - p1.analysis.royalties],
+      headToHead: [h2h, -h2h],
+      scores: [h2h + p1.analysis.royalties, -h2h - p1.analysis.royalties],
     };
+  }
 
   const rows = ["top", "mid", "bot"] as const;
   let w1 = 0;
@@ -87,10 +94,12 @@ function computeMatch(players: PlayerData[]): MatchResult | null {
     else if (v2 > v1) w2++;
   }
 
-  const rowDiff = w1 - w2;
+  const rawDiff = w1 - w2;
   const scoop = w1 === 3 ? 3 : w2 === 3 ? -3 : 0;
+  const h2h = rawDiff + scoop; // rows + scoop only
+
   const royDiff = p1.analysis.royalties - p2.analysis.royalties;
-  const net = rowDiff + scoop + royDiff;
+  const net = h2h + royDiff;
 
   const mult = Math.max(
     p1.analysis.multiplier || 1,
@@ -100,6 +109,7 @@ function computeMatch(players: PlayerData[]): MatchResult | null {
   return {
     wins: [w1, w2],
     foul: [false, false],
+    headToHead: [h2h * mult, -h2h * mult],
     scores: [net * mult, -net * mult],
   };
 }
@@ -172,7 +182,7 @@ function BoardRow({
   data: CardDetail;
   isFoul: boolean;
 }) {
-  const overlap = data.cards.length > 3;
+  const overlap = data.cards.length > 1;
 
   return (
     <div>
@@ -276,23 +286,23 @@ export default async function HandPage({
           if (match) {
             const my = match.wins[idx];
             const their = match.wins[otherIdx];
-            const score = match.scores[idx];
+            const h2h = match.headToHead[idx];
 
             if (match.foul[idx]) {
-              resultText = `FOUL  ${fmtScore(score)}`;
+              resultText = `FOUL  ${fmtScore(h2h)}`;
               resultColor = "#ef5350";
               resultWeight = 800;
             } else if (my === 3) {
-              resultText = `SCOOP! ${fmtScore(score)}`;
+              resultText = `SCOOP!  ${fmtScore(h2h)}`;
               resultColor = "#4caf50";
             } else if (my > their) {
-              resultText = `${my}\u2013${their}  ${fmtScore(score)}`;
+              resultText = `${my}\u2013${their}  ${fmtScore(h2h)}`;
               resultColor = "#4caf50";
             } else if (my < their) {
-              resultText = `${my}\u2013${their}  ${fmtScore(score)}`;
+              resultText = `${my}\u2013${their}  ${fmtScore(h2h)}`;
               resultColor = "#ef5350";
             } else {
-              resultText = `${my}\u2013${their}  ${fmtScore(score)}`;
+              resultText = `${my}\u2013${their}  ${fmtScore(h2h)}`;
               resultColor = "var(--color-muted)";
             }
           }
