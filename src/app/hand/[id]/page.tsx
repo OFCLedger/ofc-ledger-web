@@ -279,10 +279,12 @@ export default async function HandPage({
           const otherIdx = idx === 0 ? 1 : 0;
 
           /* Royalties: net & gross */
+          const d = player.analysis.details;
+          const bruttoRoyalties =
+            (d?.top?.pts || 0) + (d?.mid?.pts || 0) + (d?.bot?.pts || 0);
           const myRoy = player.analysis.royalties;
           const opponentRoy =
             players.length === 2 ? players[otherIdx].analysis.royalties : 0;
-          // Foul = you collect 0, but we show actual royalties as gross
           const effectiveRoy = isFoul ? 0 : myRoy;
           const effectiveOppRoy = match?.foul[otherIdx] ? 0 : opponentRoy;
           const netRoy = effectiveRoy - effectiveOppRoy;
@@ -367,7 +369,7 @@ export default async function HandPage({
                       </span>
                       {/* Gross (parens) — gold, dimmed if foul */}
                       <span style={{ color: "#ffd700", opacity: isFoul ? 0.5 : 1 }}>
-                        ({myRoy}p)
+                        ({bruttoRoyalties}p)
                       </span>
                     </div>
                   )}
