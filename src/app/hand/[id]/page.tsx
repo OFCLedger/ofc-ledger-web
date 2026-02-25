@@ -21,6 +21,7 @@ interface PlayerData {
   player: string;
   analysis: PlayerAnalysis;
   fantasyLand: { isActive: boolean };
+  choice?: { hasAbility: boolean };
 }
 
 interface SharedHand {
@@ -39,14 +40,39 @@ const suitMap: Record<string, string> = {
   c: "\u2663",
 };
 const redSuits = new Set(["h", "d"]);
+const validSuits = new Set(["h", "s", "d", "c"]);
 
-function parseCard(card: string) {
-  const rank = card.slice(0, -1);
-  const suitChar = card.slice(-1);
+function parseCard(str: string) {
+  // "JJ" → joker displayed as Jack
+  if (str === "JJ") {
+    return { rank: "J", suit: "", isRed: false, isJoker: true };
+  }
+
+  let rank: string;
+  let suitChar: string;
+  let isJoker = false;
+
+  if (str.length > 2 && str.endsWith("J") && validSuits.has(str[str.length - 2])) {
+    // "AhJ" → rank=A, suit=h, joker
+    suitChar = str[str.length - 2];
+    rank = str.slice(0, -2);
+    isJoker = true;
+  } else if (str.length > 2 && str[str.length - 2] === "J" && validSuits.has(str[str.length - 1])) {
+    // "AJh" → rank=A, suit=h, joker
+    suitChar = str[str.length - 1];
+    rank = str.slice(0, -2);
+    isJoker = true;
+  } else {
+    // Normal: "Ah"
+    suitChar = str[str.length - 1];
+    rank = str.slice(0, -1);
+  }
+
   return {
     rank,
-    suit: suitMap[suitChar] ?? suitChar,
+    suit: suitMap[suitChar] ?? "",
     isRed: redSuits.has(suitChar),
+    isJoker,
   };
 }
 
@@ -150,7 +176,13 @@ function PlayingCard({
   overlap: boolean;
   isLast: boolean;
 }) {
-  const { rank, suit, isRed } = parseCard(code);
+  const { rank, suit, isRed, isJoker } = parseCard(code);
+
+  const baseShadow = overlap
+    ? "-2px 0 4px rgba(0,0,0,0.3)"
+    : "0 1px 4px rgba(0,0,0,0.35)";
+  const jokerShadow = "0 0 6px rgba(255,215,0,0.4), inset 0 0 0 1px rgba(255,215,0,0.2)";
+
   return (
     <span
       className="relative inline-flex items-center justify-center rounded-[6px] font-[family-name:var(--font-dm-mono)] text-[13px] font-[800] leading-none"
@@ -159,9 +191,8 @@ function PlayingCard({
         height: 52,
         backgroundColor: "#f5f0e8",
         color: isRed ? "#cc2200" : "#1a1a1a",
-        boxShadow: overlap
-          ? "-2px 0 4px rgba(0,0,0,0.3)"
-          : "0 1px 4px rgba(0,0,0,0.35)",
+        border: isJoker ? "2px solid #ffd700" : undefined,
+        boxShadow: isJoker ? `${baseShadow}, ${jokerShadow}` : baseShadow,
         marginRight: overlap && !isLast ? -10 : 0,
         zIndex: isLast ? 5 : undefined,
       }}
@@ -247,11 +278,14 @@ export default async function HandPage({
           const isFoul = player.analysis.isFoul;
           const otherIdx = idx === 0 ? 1 : 0;
 
-          /* Royalties: net & gross — foul = 0 gross */
+          /* Royalties: net & gross */
+          const myRoy = player.analysis.royalties;
           const opponentRoy =
             players.length === 2 ? players[otherIdx].analysis.royalties : 0;
-          const grossRoy = isFoul ? 0 : player.analysis.royalties;
-          const netRoy = grossRoy - (match?.foul[otherIdx] ? 0 : opponentRoy);
+          // Foul = you collect 0, but we show actual royalties as gross
+          const effectiveRoy = isFoul ? 0 : myRoy;
+          const effectiveOppRoy = match?.foul[otherIdx] ? 0 : opponentRoy;
+          const netRoy = effectiveRoy - effectiveOppRoy;
 
           /* Result line parts */
           let resultLabel = "";
@@ -280,13 +314,13 @@ export default async function HandPage({
                 ? "#ef5350"
                 : "var(--color-muted)";
 
-          /* Pills */
-          const pills: { label: string; color?: string }[] = [];
+          /* Badges */
+          const badges: { label: string; bg: string }[] = [];
           if (player.fantasyLand?.isActive) {
-            pills.push({ label: "FL", color: "#ffd700" });
+            badges.push({ label: "FL", bg: "#9c27b0" });
           }
-          if (player.analysis.bonusMessage) {
-            pills.push({ label: player.analysis.bonusMessage });
+          if (player.choice?.hasAbility) {
+            badges.push({ label: "TC", bg: "#0066cc" });
           }
 
           return (
@@ -298,20 +332,25 @@ export default async function HandPage({
                     <span className="text-[15px] font-bold text-white">
                       {player.player}
                     </span>
-                    {pills.map((pill, i) => (
+                    {badges.map((b, i) => (
                       <span
                         key={i}
-                        className="rounded-full bg-white/10 px-2 py-0.5 font-[family-name:var(--font-dm-mono)] text-[10px] font-medium"
-                        style={{ color: pill.color || "var(--color-muted)" }}
+                        className="text-[10px] font-semibold text-white"
+                        style={{
+                          backgroundColor: b.bg,
+                          borderRadius: 20,
+                          padding: "2px 7px",
+                          letterSpacing: "0.5px",
+                        }}
                       >
-                        {pill.label}
+                        {b.label}
                       </span>
                     ))}
                   </div>
                   {match && (
                     <div className="mt-1 flex items-center gap-1.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
                       {/* Label: SCOOP!/2-1/FOUL — gold */}
-                      <span style={{ color: "#ffd700", fontWeight: isFoul ? 800 : 400 }}>
+                      <span style={{ color: "#ffd700" }}>
                         {resultLabel}
                       </span>
                       {/* H2H score — green/red/muted */}
@@ -328,7 +367,7 @@ export default async function HandPage({
                       </span>
                       {/* Gross (parens) — gold, dimmed if foul */}
                       <span style={{ color: "#ffd700", opacity: isFoul ? 0.5 : 1 }}>
-                        ({isFoul ? "0" : `${player.analysis.royalties}p`})
+                        ({myRoy}p)
                       </span>
                     </div>
                   )}
