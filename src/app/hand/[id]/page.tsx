@@ -243,45 +243,25 @@ export default async function HandPage({
   const players = hand.hand_data;
   const match = computeMatch(players);
 
-  /* Fetch game name if game_id exists */
-  let gameName: string | null = null;
-  if (hand.game_id) {
-    try {
-      const { data: game } = await supabase
-        .from("games")
-        .select("name")
-        .eq("id", hand.game_id)
-        .single();
-      if (game?.name) gameName = game.name;
-    } catch {
-      /* silent fail */
-    }
-  }
-
   return (
     <main className="mx-auto max-w-[480px] px-4 py-6">
-      {/* Page title */}
-      <div className="mb-5">
-        <h1 className="font-[family-name:var(--font-anton)] text-xl tracking-wide text-[var(--color-gold)]">
-          HAND #{(hand.round_index ?? 0) + 1}
-        </h1>
-        {gameName && (
-          <p className="mt-0.5 font-[family-name:var(--font-dm-mono)] text-[12px] text-[var(--color-muted)]">
-            {gameName}
-          </p>
-        )}
-      </div>
-
       {/* Player cards */}
       <div className="flex flex-col gap-4">
         {players.map((player, idx) => {
           const isFoul = player.analysis.isFoul;
           const otherIdx = idx === 0 ? 1 : 0;
 
+          /* Royalties: net & gross */
+          const grossRoy = player.analysis.royalties;
+          const opponentRoy =
+            players.length === 2 ? players[otherIdx].analysis.royalties : 0;
+          const netRoy = grossRoy - opponentRoy;
+
           /* Result line */
-          let resultText = "";
+          let resultH2H = "";
           let resultColor = "";
           let resultWeight = 400;
+          let royaltyTag = ""; // "👑 +5p (12p)"
 
           if (match) {
             const my = match.wins[idx];
@@ -289,21 +269,26 @@ export default async function HandPage({
             const h2h = match.headToHead[idx];
 
             if (match.foul[idx]) {
-              resultText = `FOUL  ${fmtScore(h2h)}`;
+              resultH2H = `FOUL  ${fmtScore(h2h)}`;
               resultColor = "#ef5350";
               resultWeight = 800;
             } else if (my === 3) {
-              resultText = `SCOOP!  ${fmtScore(h2h)}`;
+              resultH2H = `SCOOP!  ${fmtScore(h2h)}`;
               resultColor = "#4caf50";
             } else if (my > their) {
-              resultText = `${my}\u2013${their}  ${fmtScore(h2h)}`;
+              resultH2H = `${my}\u2013${their}  ${fmtScore(h2h)}`;
               resultColor = "#4caf50";
             } else if (my < their) {
-              resultText = `${my}\u2013${their}  ${fmtScore(h2h)}`;
+              resultH2H = `${my}\u2013${their}  ${fmtScore(h2h)}`;
               resultColor = "#ef5350";
             } else {
-              resultText = `${my}\u2013${their}  ${fmtScore(h2h)}`;
+              resultH2H = `${my}\u2013${their}  ${fmtScore(h2h)}`;
               resultColor = "var(--color-muted)";
+            }
+
+            // Royalties inline — show for non-fouling players
+            if (!isFoul && grossRoy > 0) {
+              royaltyTag = `\u{1F451} ${fmtScore(netRoy)} (${grossRoy}p)`;
             }
           }
 
@@ -315,12 +300,6 @@ export default async function HandPage({
               : score < 0
                 ? "#ef5350"
                 : "var(--color-muted)";
-
-          /* Royalties: net & gross */
-          const grossRoy = player.analysis.royalties;
-          const opponentRoy =
-            players.length === 2 ? players[otherIdx].analysis.royalties : 0;
-          const netRoy = grossRoy - opponentRoy;
 
           /* Pills */
           const pills: { label: string; color?: string }[] = [];
@@ -351,11 +330,16 @@ export default async function HandPage({
                     ))}
                   </div>
                   {match && (
-                    <div
-                      className="mt-1 font-[family-name:var(--font-dm-mono)] text-[11px]"
-                      style={{ color: resultColor, fontWeight: resultWeight }}
-                    >
-                      {resultText}
+                    <div className="mt-1 flex items-center gap-2 font-[family-name:var(--font-dm-mono)] text-[11px]">
+                      <span style={{ color: resultColor, fontWeight: resultWeight }}>
+                        {resultH2H}
+                      </span>
+                      {royaltyTag && (
+                        <>
+                          <span className="text-[var(--color-muted)]/40">|</span>
+                          <span className="text-[var(--color-gold)]">{royaltyTag}</span>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -389,12 +373,6 @@ export default async function HandPage({
                 />
               </div>
 
-              {/* Royalties footer — hidden on foul */}
-              {!isFoul && grossRoy > 0 && (
-                <div className="mt-3 border-t border-white/10 pt-2 text-right font-[family-name:var(--font-dm-mono)] text-[11px] text-[var(--color-gold)]">
-                  👑 {fmtScore(netRoy)} ({grossRoy}p)
-                </div>
-              )}
             </div>
           );
         })}
