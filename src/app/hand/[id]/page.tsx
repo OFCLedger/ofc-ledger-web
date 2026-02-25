@@ -176,11 +176,9 @@ function PlayingCard({
 function BoardRow({
   label,
   data,
-  isFoul,
 }: {
   label: string;
   data: CardDetail;
-  isFoul: boolean;
 }) {
   const overlap = data.cards.length > 1;
 
@@ -200,18 +198,16 @@ function BoardRow({
             />
           ))}
         </div>
-        {!isFoul && (
-          <div className="ml-auto text-right">
-            <span className="font-[family-name:var(--font-dm-mono)] text-[11px] italic text-[var(--color-muted)]">
-              {data.name}
+        <div className="ml-auto flex min-w-[120px] flex-col items-end">
+          <span className="font-[family-name:var(--font-dm-mono)] text-[11px] italic text-[var(--color-muted)]">
+            {data.name}
+          </span>
+          {data.pts > 0 && (
+            <span className="font-[family-name:var(--font-dm-mono)] text-[10px] text-[var(--color-gold)]">
+              +{data.pts}p
             </span>
-            {data.pts > 0 && (
-              <span className="ml-1.5 font-[family-name:var(--font-dm-mono)] text-[10px] text-[var(--color-gold)]">
-                +{data.pts}
-              </span>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
@@ -251,44 +247,27 @@ export default async function HandPage({
           const isFoul = player.analysis.isFoul;
           const otherIdx = idx === 0 ? 1 : 0;
 
-          /* Royalties: net & gross */
-          const grossRoy = player.analysis.royalties;
+          /* Royalties: net & gross — foul = 0 gross */
           const opponentRoy =
             players.length === 2 ? players[otherIdx].analysis.royalties : 0;
-          const netRoy = grossRoy - opponentRoy;
+          const grossRoy = isFoul ? 0 : player.analysis.royalties;
+          const netRoy = grossRoy - (match?.foul[otherIdx] ? 0 : opponentRoy);
 
-          /* Result line */
-          let resultH2H = "";
-          let resultColor = "";
-          let resultWeight = 400;
-          let royaltyTag = ""; // "👑 +5p (12p)"
+          /* Result line parts */
+          let resultLabel = "";
+          let h2hVal = 0;
 
           if (match) {
             const my = match.wins[idx];
             const their = match.wins[otherIdx];
-            const h2h = match.headToHead[idx];
+            h2hVal = match.headToHead[idx];
 
             if (match.foul[idx]) {
-              resultH2H = `FOUL  ${fmtScore(h2h)}`;
-              resultColor = "#ef5350";
-              resultWeight = 800;
+              resultLabel = "FOUL";
             } else if (my === 3) {
-              resultH2H = `SCOOP!  ${fmtScore(h2h)}`;
-              resultColor = "#4caf50";
-            } else if (my > their) {
-              resultH2H = `${my}\u2013${their}  ${fmtScore(h2h)}`;
-              resultColor = "#4caf50";
-            } else if (my < their) {
-              resultH2H = `${my}\u2013${their}  ${fmtScore(h2h)}`;
-              resultColor = "#ef5350";
+              resultLabel = "SCOOP!";
             } else {
-              resultH2H = `${my}\u2013${their}  ${fmtScore(h2h)}`;
-              resultColor = "var(--color-muted)";
-            }
-
-            // Royalties inline — show for non-fouling players
-            if (!isFoul && grossRoy > 0) {
-              royaltyTag = `\u{1F451} ${fmtScore(netRoy)} (${grossRoy}p)`;
+              resultLabel = `${my}\u2013${their}`;
             }
           }
 
@@ -330,16 +309,27 @@ export default async function HandPage({
                     ))}
                   </div>
                   {match && (
-                    <div className="mt-1 flex items-center gap-2 font-[family-name:var(--font-dm-mono)] text-[11px]">
-                      <span style={{ color: resultColor, fontWeight: resultWeight }}>
-                        {resultH2H}
+                    <div className="mt-1 flex items-center gap-1.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
+                      {/* Label: SCOOP!/2-1/FOUL — gold */}
+                      <span style={{ color: "#ffd700", fontWeight: isFoul ? 800 : 400 }}>
+                        {resultLabel}
                       </span>
-                      {royaltyTag && (
-                        <>
-                          <span className="text-[var(--color-muted)]/40">|</span>
-                          <span className="text-[var(--color-gold)]">{royaltyTag}</span>
-                        </>
-                      )}
+                      {/* H2H score — green/red/muted */}
+                      <span style={{ color: h2hVal > 0 ? "#4caf50" : h2hVal < 0 ? "#ef5350" : "#a3c2b0" }}>
+                        {fmtScore(h2hVal)}
+                      </span>
+                      {/* Separator */}
+                      <span style={{ color: "#a3c2b0", opacity: 0.4 }}>|</span>
+                      {/* Crown — gold */}
+                      <span style={{ color: "#ffd700" }}>{"\u{1F451}"}</span>
+                      {/* Net royalties — green/red/muted */}
+                      <span style={{ color: netRoy > 0 ? "#4caf50" : netRoy < 0 ? "#ef5350" : "#a3c2b0" }}>
+                        {fmtScore(netRoy)}
+                      </span>
+                      {/* Gross (parens) — gold, dimmed if foul */}
+                      <span style={{ color: "#ffd700", opacity: isFoul ? 0.5 : 1 }}>
+                        ({isFoul ? "0" : `${player.analysis.royalties}p`})
+                      </span>
                     </div>
                   )}
                 </div>
@@ -356,21 +346,9 @@ export default async function HandPage({
                 className="flex flex-col gap-2"
                 style={{ opacity: isFoul ? 0.5 : 1 }}
               >
-                <BoardRow
-                  label="TOP"
-                  data={player.analysis.details.top}
-                  isFoul={isFoul}
-                />
-                <BoardRow
-                  label="MID"
-                  data={player.analysis.details.mid}
-                  isFoul={isFoul}
-                />
-                <BoardRow
-                  label="BOT"
-                  data={player.analysis.details.bot}
-                  isFoul={isFoul}
-                />
+                <BoardRow label="TOP" data={player.analysis.details.top} />
+                <BoardRow label="MID" data={player.analysis.details.mid} />
+                <BoardRow label="BOT" data={player.analysis.details.bot} />
               </div>
 
             </div>
