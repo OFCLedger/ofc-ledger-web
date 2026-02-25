@@ -348,21 +348,6 @@ export default async function HandPage({
                         {b.label}
                       </span>
                     ))}
-                    {player.analysis.multiplier > 1 && player.analysis.bonusMessage && (
-                      <span
-                        className="text-[10px] font-semibold"
-                        style={{
-                          background: "rgba(255,215,0,0.12)",
-                          border: "1px solid rgba(255,215,0,0.3)",
-                          borderRadius: 20,
-                          padding: "2px 8px",
-                          color: "#ffd700",
-                          letterSpacing: "0.5px",
-                        }}
-                      >
-                        {player.analysis.bonusMessage}
-                      </span>
-                    )}
                   </div>
                   {match && (
                     <div className="mt-1 flex items-center gap-1.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
@@ -386,6 +371,24 @@ export default async function HandPage({
                       <span style={{ color: "#ffd700", opacity: isFoul ? 0.5 : 1 }}>
                         ({bruttoRoyalties}p)
                       </span>
+                      {player.analysis.multiplier > 1 && player.analysis.bonusMessage && (
+                        <>
+                          <span style={{ color: "#a3c2b0", opacity: 0.4 }}>|</span>
+                          <span
+                            className="text-[10px] font-semibold"
+                            style={{
+                              background: "rgba(255,215,0,0.12)",
+                              border: "1px solid rgba(255,215,0,0.3)",
+                              borderRadius: 20,
+                              padding: "2px 8px",
+                              color: "#ffd700",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
+                            {player.analysis.bonusMessage}
+                          </span>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -396,14 +399,6 @@ export default async function HandPage({
                   >
                     {score > 0 ? `+${score}` : score}
                   </div>
-                  {player.analysis.multiplier > 1 && (
-                    <span
-                      className="font-[family-name:var(--font-dm-mono)] text-[12px]"
-                      style={{ color: "#ffd700", opacity: 0.6 }}
-                    >
-                      ×{player.analysis.multiplier}
-                    </span>
-                  )}
                 </div>
               </div>
 
