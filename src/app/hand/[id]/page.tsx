@@ -76,68 +76,43 @@ function parseCard(str: string) {
   };
 }
 
-/* ── Match result (2 players) ── */
+/* ── Pairwise head-to-head ── */
 
-type MatchResult = {
-  wins: [number, number];
-  foul: [boolean, boolean];
-  headToHead: [number, number]; // rows + scoop only (for result line)
-  scores: [number, number]; // total net incl. royalties (for big number)
-};
+interface PairH2H {
+  opponentName: string;
+  label: string;
+  h2h: number;
+}
 
-function computeMatch(players: PlayerData[]): MatchResult | null {
-  if (players.length !== 2) return null;
-  const [p1, p2] = players;
+function computePairH2H(me: PlayerData, opp: PlayerData): PairH2H {
+  const myFoul = me.analysis.isFoul;
+  const oppFoul = opp.analysis.isFoul;
 
-  if (p1.analysis.isFoul && p2.analysis.isFoul)
-    return { wins: [0, 0], foul: [true, true], headToHead: [0, 0], scores: [0, 0] };
-  if (p1.analysis.isFoul) {
-    const h2h = -6;
-    return {
-      wins: [0, 3],
-      foul: [true, false],
-      headToHead: [h2h, -h2h],
-      scores: [h2h - p2.analysis.royalties, -h2h + p2.analysis.royalties],
-    };
+  if (myFoul && oppFoul) {
+    return { opponentName: opp.player, label: "FOUL", h2h: 0 };
   }
-  if (p2.analysis.isFoul) {
-    const h2h = 6;
-    return {
-      wins: [3, 0],
-      foul: [false, true],
-      headToHead: [h2h, -h2h],
-      scores: [h2h + p1.analysis.royalties, -h2h - p1.analysis.royalties],
-    };
+  if (myFoul) {
+    return { opponentName: opp.player, label: "FOUL", h2h: -6 };
+  }
+  if (oppFoul) {
+    return { opponentName: opp.player, label: "SCOOP", h2h: 6 };
   }
 
   const rows = ["top", "mid", "bot"] as const;
-  let w1 = 0;
-  let w2 = 0;
+  let wins = 0;
+  let losses = 0;
   for (const r of rows) {
-    const v1 = p1.analysis.details[r].rankValue;
-    const v2 = p2.analysis.details[r].rankValue;
-    if (v1 > v2) w1++;
-    else if (v2 > v1) w2++;
+    const myVal = me.analysis.details[r].rankValue;
+    const oppVal = opp.analysis.details[r].rankValue;
+    if (myVal > oppVal) wins++;
+    else if (oppVal > myVal) losses++;
   }
 
-  const rawDiff = w1 - w2;
-  const scoop = w1 === 3 ? 3 : w2 === 3 ? -3 : 0;
-  const h2h = rawDiff + scoop; // rows + scoop only
+  const scoop = wins === 3 ? 3 : losses === 3 ? -3 : 0;
+  const h2h = (wins - losses) + scoop;
+  const label = wins === 3 ? "SCOOP" : `${wins}\u2013${losses}`;
 
-  const royDiff = p1.analysis.royalties - p2.analysis.royalties;
-  const net = h2h + royDiff;
-
-  const mult = Math.max(
-    p1.analysis.multiplier || 1,
-    p2.analysis.multiplier || 1
-  );
-
-  return {
-    wins: [w1, w2],
-    foul: [false, false],
-    headToHead: [h2h * mult, -h2h * mult],
-    scores: [net * mult, -net * mult],
-  };
+  return { opponentName: opp.player, label, h2h };
 }
 
 /* ── Format score with sign ── */
@@ -268,47 +243,38 @@ export default async function HandPage({
 
   const hand = data as SharedHand;
   const players = hand.hand_data;
-  const match = computeMatch(players);
-
   return (
     <main className="mx-auto max-w-[480px] px-4 py-6">
       {/* Player cards */}
       <div className="flex flex-col gap-4">
         {players.map((player, idx) => {
           const isFoul = player.analysis.isFoul;
-          const otherIdx = idx === 0 ? 1 : 0;
+
+          /* Pairwise results vs each opponent */
+          const pairs = players
+            .filter((_, i) => i !== idx)
+            .map((opp) => computePairH2H(player, opp));
+          const totalH2H = pairs.reduce((sum, p) => sum + p.h2h, 0);
 
           /* Royalties: net & gross */
           const d = player.analysis.details;
           const bruttoRoyalties =
             (d?.top?.pts || 0) + (d?.mid?.pts || 0) + (d?.bot?.pts || 0);
-          const myRoy = player.analysis.royalties;
-          const opponentRoy =
-            players.length === 2 ? players[otherIdx].analysis.royalties : 0;
-          const effectiveRoy = isFoul ? 0 : myRoy;
-          const effectiveOppRoy = match?.foul[otherIdx] ? 0 : opponentRoy;
-          const netRoy = effectiveRoy - effectiveOppRoy;
+          const effectiveRoy = isFoul ? 0 : player.analysis.royalties;
+          const oppRoySum = players
+            .filter((_, i) => i !== idx)
+            .reduce(
+              (sum, opp) =>
+                sum + (opp.analysis.isFoul ? 0 : opp.analysis.royalties),
+              0
+            );
+          const netRoy = effectiveRoy - oppRoySum;
 
-          /* Result line parts */
-          let resultLabel = "";
-          let h2hVal = 0;
-
-          if (match) {
-            const my = match.wins[idx];
-            const their = match.wins[otherIdx];
-            h2hVal = match.headToHead[idx];
-
-            if (match.foul[idx]) {
-              resultLabel = "FOUL";
-            } else if (my === 3) {
-              resultLabel = "SCOOP!";
-            } else {
-              resultLabel = `${my}\u2013${their}`;
-            }
-          }
-
-          /* Score for big number */
-          const score = match ? match.scores[idx] : 0;
+          /* Total score with multiplier */
+          const mult = Math.max(
+            ...players.map((p) => p.analysis.multiplier || 1)
+          );
+          const score = (totalH2H + netRoy) * mult;
           const scoreColor =
             score > 0
               ? "#4caf50"
@@ -349,46 +315,78 @@ export default async function HandPage({
                       </span>
                     ))}
                   </div>
-                  {match && (
-                    <div className="mt-1 flex items-center gap-1.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
-                      {/* Label: SCOOP!/2-1/FOUL — gold */}
-                      <span style={{ color: "#ffd700" }}>
-                        {resultLabel}
-                      </span>
-                      {/* H2H score — green/red/muted */}
-                      <span style={{ color: h2hVal > 0 ? "#4caf50" : h2hVal < 0 ? "#ef5350" : "#a3c2b0" }}>
-                        {fmtScore(h2hVal)}
-                      </span>
-                      {/* Separator */}
-                      <span style={{ color: "#a3c2b0", opacity: 0.4 }}>|</span>
-                      {/* Crown — gold */}
-                      <span style={{ color: "#ffd700" }}>{"\u{1F451}"}</span>
-                      {/* Net royalties — green/red/muted */}
-                      <span style={{ color: netRoy > 0 ? "#4caf50" : netRoy < 0 ? "#ef5350" : "#a3c2b0" }}>
-                        {fmtScore(netRoy)}
-                      </span>
-                      {/* Gross (parens) — gold, dimmed if foul */}
-                      <span style={{ color: "#ffd700", opacity: isFoul ? 0.5 : 1 }}>
-                        ({bruttoRoyalties}p)
-                      </span>
-                      {player.analysis.multiplier > 1 && player.analysis.bonusMessage && (
-                        <>
-                          <span style={{ color: "#a3c2b0", opacity: 0.4 }}>|</span>
+                  {/* Per-opponent result lines */}
+                  {pairs.length > 0 && (
+                    <div className="mt-1 flex flex-col gap-0.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
+                      {pairs.map((pair, i) => (
+                        <div key={i} className="flex items-center gap-1.5">
+                          <span style={{ color: "#a3c2b0" }}>
+                            vs {pair.opponentName}:
+                          </span>
+                          <span style={{ color: "#ffd700" }}>
+                            {pair.label}
+                          </span>
                           <span
-                            className="text-[10px] font-semibold"
                             style={{
-                              background: "rgba(255,215,0,0.12)",
-                              border: "1px solid rgba(255,215,0,0.3)",
-                              borderRadius: 20,
-                              padding: "2px 8px",
-                              color: "#ffd700",
-                              letterSpacing: "0.5px",
+                              color:
+                                pair.h2h > 0
+                                  ? "#4caf50"
+                                  : pair.h2h < 0
+                                    ? "#ef5350"
+                                    : "#a3c2b0",
                             }}
                           >
-                            {player.analysis.bonusMessage}
+                            {fmtScore(pair.h2h)}
                           </span>
-                        </>
-                      )}
+                        </div>
+                      ))}
+                      {/* Royalties line */}
+                      <div className="flex items-center gap-1.5">
+                        <span style={{ color: "#ffd700" }}>{"\u{1F451}"}</span>
+                        <span
+                          style={{
+                            color:
+                              netRoy > 0
+                                ? "#4caf50"
+                                : netRoy < 0
+                                  ? "#ef5350"
+                                  : "#a3c2b0",
+                          }}
+                        >
+                          {fmtScore(netRoy)}
+                        </span>
+                        <span
+                          style={{
+                            color: "#ffd700",
+                            opacity: isFoul ? 0.5 : 1,
+                          }}
+                        >
+                          ({bruttoRoyalties}p)
+                        </span>
+                        {player.analysis.multiplier > 1 &&
+                          player.analysis.bonusMessage && (
+                            <>
+                              <span
+                                style={{ color: "#a3c2b0", opacity: 0.4 }}
+                              >
+                                |
+                              </span>
+                              <span
+                                className="text-[10px] font-semibold"
+                                style={{
+                                  background: "rgba(255,215,0,0.12)",
+                                  border: "1px solid rgba(255,215,0,0.3)",
+                                  borderRadius: 20,
+                                  padding: "2px 8px",
+                                  color: "#ffd700",
+                                  letterSpacing: "0.5px",
+                                }}
+                              >
+                                {player.analysis.bonusMessage}
+                              </span>
+                            </>
+                          )}
+                      </div>
                     </div>
                   )}
                 </div>
