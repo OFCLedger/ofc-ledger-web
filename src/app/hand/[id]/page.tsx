@@ -26,7 +26,8 @@ interface PlayerData {
 
 interface SharedHand {
   id: string;
-  hand_data: PlayerData[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  hand_data: any;
   round_index: number;
   game_id?: string;
 }
@@ -242,7 +243,10 @@ export default async function HandPage({
   if (!data || error) return <NotFound />;
 
   const hand = data as SharedHand;
-  const players = hand.hand_data;
+  const raw = hand.hand_data;
+  const players: PlayerData[] = Array.isArray(raw) ? raw : (raw?.hands || []);
+  const scores: Record<string, number> | null = Array.isArray(raw) ? null : (raw?.scores || null);
+
   return (
     <main className="mx-auto max-w-[480px] px-4 py-6">
       {/* Player cards */}
@@ -270,11 +274,14 @@ export default async function HandPage({
             );
           const netRoy = effectiveRoy - oppRoySum;
 
-          /* Total score with multiplier */
+          /* Total score: use pre-computed if available, else calculate */
           const mult = Math.max(
             ...players.map((p) => p.analysis.multiplier || 1)
           );
-          const score = (totalH2H + netRoy) * mult;
+          const score =
+            scores && scores[player.player] != null
+              ? scores[player.player]
+              : (totalH2H + netRoy) * mult;
           const scoreColor =
             score > 0
               ? "#4caf50"
