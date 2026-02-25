@@ -396,6 +396,37 @@ export default async function HandPage({
           );
         })}
       </div>
+
+      {/* CTA footer */}
+      <div
+        className="mt-6 flex flex-col items-center text-center"
+        style={{
+          borderTop: "1px solid rgba(255,215,0,0.08)",
+          padding: "24px 20px 40px",
+        }}
+      >
+        <span className="text-[11px] text-[var(--color-muted)]">Played with</span>
+        <span className="mt-1 font-[family-name:var(--font-anton)] text-lg tracking-wider text-[var(--color-gold)]">
+          OFC LEDGER
+        </span>
+        <span className="mt-0.5 text-[11px] italic text-[var(--color-muted)]">
+          For grinders and gamblers.
+        </span>
+        <span
+          className="mt-4 text-[12px] uppercase"
+          style={{
+            border: "1px solid rgba(255,215,0,0.3)",
+            borderRadius: 20,
+            padding: "8px 20px",
+            color: "#ffd700",
+            opacity: 0.5,
+            letterSpacing: "2px",
+            cursor: "default",
+          }}
+        >
+          Download — Coming Soon
+        </span>
+      </div>
     </main>
   );
 }
