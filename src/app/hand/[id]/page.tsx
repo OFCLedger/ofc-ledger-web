@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-import LogoOutline from "@/components/LogoOutline";
 
 /* ── Types ── */
 
@@ -28,6 +27,7 @@ interface SharedHand {
   id: string;
   hand_data: PlayerData[];
   round_index: number;
+  game_id?: string;
 }
 
 /* ── Card parsing ── */
@@ -104,6 +104,14 @@ function computeMatch(players: PlayerData[]): MatchResult | null {
   };
 }
 
+/* ── Format score with sign ── */
+
+function fmtScore(n: number, suffix = "p") {
+  if (n > 0) return `+${n}${suffix}`;
+  if (n < 0) return `\u2212${Math.abs(n)}${suffix}`;
+  return `0${suffix}`;
+}
+
 /* ── Not-found fallback ── */
 
 function NotFound() {
@@ -121,54 +129,79 @@ function NotFound() {
   );
 }
 
-/* ── Playing card chip ── */
+/* ── Playing card ── */
 
-function PlayingCard({ code }: { code: string }) {
+function PlayingCard({
+  code,
+  overlap,
+  isLast,
+}: {
+  code: string;
+  overlap: boolean;
+  isLast: boolean;
+}) {
   const { rank, suit, isRed } = parseCard(code);
   return (
     <span
-      className="inline-flex h-8 w-6 flex-col items-center justify-center rounded-[4px] font-[family-name:var(--font-dm-mono)] text-[10px] font-bold leading-none"
+      className="relative inline-flex items-center justify-center rounded-[6px] font-[family-name:var(--font-dm-mono)] text-[13px] font-[800] leading-none"
       style={{
+        width: 36,
+        height: 52,
         backgroundColor: "#f5f0e8",
         color: isRed ? "#cc2200" : "#1a1a1a",
+        boxShadow: overlap
+          ? "-2px 0 4px rgba(0,0,0,0.3)"
+          : "0 1px 4px rgba(0,0,0,0.35)",
+        marginRight: overlap && !isLast ? -10 : 0,
+        zIndex: isLast ? 5 : undefined,
       }}
     >
-      <span>{rank}</span>
-      <span className="text-[8px]">{suit}</span>
+      {rank}{suit}
     </span>
   );
 }
 
-/* ── Row component ── */
+/* ── Board row ── */
 
 function BoardRow({
   label,
   data,
+  isFoul,
 }: {
   label: string;
   data: CardDetail;
+  isFoul: boolean;
 }) {
+  const overlap = data.cards.length > 3;
+
   return (
     <div>
       <div className="mb-1 font-[family-name:var(--font-dm-mono)] text-[9px] uppercase tracking-wider text-[var(--color-muted)]">
         {label}
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex gap-1">
+        <div className="flex">
           {data.cards.map((c, i) => (
-            <PlayingCard key={i} code={c} />
+            <PlayingCard
+              key={i}
+              code={c}
+              overlap={overlap}
+              isLast={i === data.cards.length - 1}
+            />
           ))}
         </div>
-        <div className="ml-auto text-right">
-          <span className="font-[family-name:var(--font-dm-mono)] text-[11px] italic text-[var(--color-muted)]">
-            {data.name}
-          </span>
-          {data.pts > 0 && (
-            <span className="ml-1.5 font-[family-name:var(--font-dm-mono)] text-[10px] text-[var(--color-gold)]">
-              +{data.pts}
+        {!isFoul && (
+          <div className="ml-auto text-right">
+            <span className="font-[family-name:var(--font-dm-mono)] text-[11px] italic text-[var(--color-muted)]">
+              {data.name}
             </span>
-          )}
-        </div>
+            {data.pts > 0 && (
+              <span className="ml-1.5 font-[family-name:var(--font-dm-mono)] text-[10px] text-[var(--color-gold)]">
+                +{data.pts}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -200,51 +233,71 @@ export default async function HandPage({
   const players = hand.hand_data;
   const match = computeMatch(players);
 
+  /* Fetch game name if game_id exists */
+  let gameName: string | null = null;
+  if (hand.game_id) {
+    try {
+      const { data: game } = await supabase
+        .from("games")
+        .select("name")
+        .eq("id", hand.game_id)
+        .single();
+      if (game?.name) gameName = game.name;
+    } catch {
+      /* silent fail */
+    }
+  }
+
   return (
     <main className="mx-auto max-w-[480px] px-4 py-6">
-      {/* Hand header */}
-      <div className="mb-6 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <LogoOutline size={24} />
-          <span className="font-[family-name:var(--font-anton)] text-base tracking-wider text-[var(--color-gold)]">
-            OFC LEDGER
-          </span>
-        </div>
-        <span className="rounded-full border border-[var(--color-gold)] px-3 py-1 font-[family-name:var(--font-anton)] text-xs tracking-wide text-[var(--color-gold)]">
+      {/* Page title */}
+      <div className="mb-5">
+        <h1 className="font-[family-name:var(--font-anton)] text-xl tracking-wide text-[var(--color-gold)]">
           HAND #{(hand.round_index ?? 0) + 1}
-        </span>
+        </h1>
+        {gameName && (
+          <p className="mt-0.5 font-[family-name:var(--font-dm-mono)] text-[12px] text-[var(--color-muted)]">
+            {gameName}
+          </p>
+        )}
       </div>
 
       {/* Player cards */}
       <div className="flex flex-col gap-4">
         {players.map((player, idx) => {
           const isFoul = player.analysis.isFoul;
+          const otherIdx = idx === 0 ? 1 : 0;
 
-          /* W/L from this player's perspective */
+          /* Result line */
           let resultText = "";
           let resultColor = "";
+          let resultWeight = 400;
+
           if (match) {
             const my = match.wins[idx];
-            const their = match.wins[idx === 0 ? 1 : 0];
+            const their = match.wins[otherIdx];
+            const score = match.scores[idx];
+
             if (match.foul[idx]) {
-              resultText = "FOUL";
+              resultText = `FOUL  ${fmtScore(score)}`;
               resultColor = "#ef5350";
+              resultWeight = 800;
             } else if (my === 3) {
-              resultText = `SCOOP! ${my}\u2013${their}`;
+              resultText = `SCOOP! ${fmtScore(score)}`;
               resultColor = "#4caf50";
             } else if (my > their) {
-              resultText = `${my}\u2013${their}`;
+              resultText = `${my}\u2013${their}  ${fmtScore(score)}`;
               resultColor = "#4caf50";
             } else if (my < their) {
-              resultText = `${my}\u2013${their}`;
+              resultText = `${my}\u2013${their}  ${fmtScore(score)}`;
               resultColor = "#ef5350";
             } else {
-              resultText = `${my}\u2013${their}`;
+              resultText = `${my}\u2013${their}  ${fmtScore(score)}`;
               resultColor = "var(--color-muted)";
             }
           }
 
-          /* Score */
+          /* Score for big number */
           const score = match ? match.scores[idx] : 0;
           const scoreColor =
             score > 0
@@ -252,6 +305,12 @@ export default async function HandPage({
               : score < 0
                 ? "#ef5350"
                 : "var(--color-muted)";
+
+          /* Royalties: net & gross */
+          const grossRoy = player.analysis.royalties;
+          const opponentRoy =
+            players.length === 2 ? players[otherIdx].analysis.royalties : 0;
+          const netRoy = grossRoy - opponentRoy;
 
           /* Pills */
           const pills: { label: string; color?: string }[] = [];
@@ -284,10 +343,7 @@ export default async function HandPage({
                   {match && (
                     <div
                       className="mt-1 font-[family-name:var(--font-dm-mono)] text-[11px]"
-                      style={{
-                        color: resultColor,
-                        fontWeight: isFoul ? 700 : 400,
-                      }}
+                      style={{ color: resultColor, fontWeight: resultWeight }}
                     >
                       {resultText}
                     </div>
@@ -301,17 +357,32 @@ export default async function HandPage({
                 </div>
               </div>
 
-              {/* Board */}
-              <div className="flex flex-col gap-2">
-                <BoardRow label="TOP" data={player.analysis.details.top} />
-                <BoardRow label="MID" data={player.analysis.details.mid} />
-                <BoardRow label="BOT" data={player.analysis.details.bot} />
+              {/* Board — dim if foul */}
+              <div
+                className="flex flex-col gap-2"
+                style={{ opacity: isFoul ? 0.5 : 1 }}
+              >
+                <BoardRow
+                  label="TOP"
+                  data={player.analysis.details.top}
+                  isFoul={isFoul}
+                />
+                <BoardRow
+                  label="MID"
+                  data={player.analysis.details.mid}
+                  isFoul={isFoul}
+                />
+                <BoardRow
+                  label="BOT"
+                  data={player.analysis.details.bot}
+                  isFoul={isFoul}
+                />
               </div>
 
-              {/* Royalties footer */}
-              {player.analysis.royalties > 0 && (
+              {/* Royalties footer — hidden on foul */}
+              {!isFoul && grossRoy > 0 && (
                 <div className="mt-3 border-t border-white/10 pt-2 text-right font-[family-name:var(--font-dm-mono)] text-[11px] text-[var(--color-gold)]">
-                  Royalties: {player.analysis.royalties}p
+                  👑 {fmtScore(netRoy)} ({grossRoy}p)
                 </div>
               )}
             </div>
