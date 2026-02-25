@@ -1,11 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import LogoOutline from "@/components/LogoOutline";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 /* ── Types ── */
 
 interface CardDetail {
@@ -187,6 +182,11 @@ export default async function HandPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const { data, error } = await supabase
     .from("shared_hands")
