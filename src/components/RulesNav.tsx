@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 
 const sections = [
   { id: "what-is-ofc", label: "What is OFC?" },
-  { id: "game-variants", label: "Game Variants" },
-  { id: "scoring", label: "Scoring" },
+  { id: "pineapple-ofc", label: "Pineapple OFC" },
+  { id: "the-board", label: "The Board" },
+  { id: "scoring", label: "Scoring & Royalties" },
   { id: "fantasy-land", label: "Fantasy Land" },
-  { id: "optional-rules", label: "Optional Rules" },
+  { id: "special-rules", label: "Special Rules" },
+  { id: "settings", label: "App Settings" },
   { id: "glossary", label: "Glossary" },
 ];
 
@@ -24,6 +26,12 @@ export default function RulesNav({ variant }: { variant: "mobile" | "desktop" })
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setActive(entry.target.id);
+            const btn = document.querySelector(
+              `[data-nav-id="${entry.target.id}"]`
+            );
+            if (btn) {
+              btn.scrollIntoView({ behavior: "smooth", inline: "nearest", block: "nearest" });
+            }
           }
         }
       },
@@ -48,6 +56,7 @@ export default function RulesNav({ variant }: { variant: "mobile" | "desktop" })
           {sections.map((s) => (
             <button
               key={s.id}
+              data-nav-id={s.id}
               onClick={() => handleClick(s.id)}
               className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 active === s.id

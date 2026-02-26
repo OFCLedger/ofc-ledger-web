@@ -1,13 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #1e3a2f;
-  --color-bg-light: #254a3b;
+  --color-bg: #152b22;
+  --color-bg-mid: #1a3329;
+  --color-bg-light: #1e3d2f;
   --color-gold: #ffd700;
   --color-gold-dim: #bfa230;
+  --color-gold-subtle: rgba(255, 215, 0, 0.08);
   --color-muted: #a3c2b0;
-  --color-card: #1a3328;
-  --color-card-border: #2d5a47;
+  --color-white: #f0f4f2;
+  --color-card: #172e25;
+  --color-card-border: #263f32;
 }
 
 @theme inline {
@@ -22,22 +25,29 @@ html {
 }
 
 body {
-  background: var(--color-bg);
+  background: radial-gradient(ellipse at 50% 0%, #1e3d2f 0%, #152b22 60%, #0f1f18 100%);
+  background-attachment: fixed;
   color: var(--color-muted);
   font-family: var(--font-body), system-ui, sans-serif;
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display), serif;
-  color: var(--color-gold);
+  color: var(--color-white);
 }
 
 /* Card component */
 .card {
-  background: var(--color-card);
+  background: linear-gradient(135deg, #1a3329 0%, #172e25 100%);
   border: 1px solid var(--color-card-border);
   border-radius: 1rem;
   padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.card:hover {
+  border-color: rgba(255, 215, 0, 0.2);
 }
 
 @media (min-width: 640px) {
@@ -73,6 +83,25 @@ h1, h2, h3, h4, h5, h6 {
 .btn-gold:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Primary button */
+.btn-primary {
+  background: var(--color-gold);
+  color: #0f1f18;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: all 0.2s;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover {
+  background: #ffe033;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px rgba(255, 215, 0, 0.25);
 }
 
 /* Prose styles for content pages */

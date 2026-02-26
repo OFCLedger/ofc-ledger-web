@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import LogoOutline from "./LogoOutline";
+import LogoHero from "./LogoHero";
 
 const links = [
   { href: "/", label: "Home" },
@@ -17,8 +17,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 backdrop-blur-md bg-[var(--color-bg)]/80 border-b border-[var(--color-card-border)]">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2 sm:gap-3">
-          <LogoOutline size={32} />
-          <span className="font-[family-name:var(--font-display)] text-base font-bold tracking-wider text-[var(--color-gold)] sm:text-lg">
+          <LogoHero size={28} />
+          <span className="font-[family-name:var(--font-display)] text-base font-bold tracking-wider text-[var(--color-white)] sm:text-lg">
             OFC LEDGER
           </span>
         </Link>
