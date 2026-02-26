@@ -18,7 +18,7 @@ export default function Header() {
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2 sm:gap-3">
           <LogoHero size={28} />
-          <span className="font-[family-name:var(--font-display)] text-base font-bold tracking-wider text-[var(--color-white)] sm:text-lg">
+          <span className="font-[family-name:var(--font-anton)] text-base font-bold tracking-wider text-[var(--color-white)] sm:text-lg">
             OFC LEDGER
           </span>
         </Link>
