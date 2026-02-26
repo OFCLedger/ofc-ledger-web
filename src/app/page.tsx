@@ -1,11 +1,10 @@
-import LogoHero from "@/components/LogoHero";
 import Link from "next/link";
 
 const features = [
   {
     emoji: "🎮",
-    title: "Async Multiplayer",
-    text: "Take your turn whenever. Full Pineapple OFC online — with Fantasy Land, Spades Multiplier, The Choice, and fully customizable rules. Your crew plays on your schedule.",
+    title: "Play on your schedule",
+    text: "Take your turn whenever it suits you. Full Pineapple OFC online — with Fantasy Land, Spades Multiplier, The Choice, and fully customizable rules.",
   },
   {
     emoji: "📸",
@@ -190,7 +189,7 @@ export default function Home() {
   return (
     <main>
       {/* ── HERO ── */}
-      <section className="flex flex-col items-center px-4 pt-20 pb-16 text-center sm:px-6 sm:pt-32 sm:pb-24">
+      <section className="flex flex-col items-center px-4 pt-10 pb-4 text-center sm:px-6 sm:pt-16 sm:pb-8">
         <span
           className="font-[family-name:var(--font-anton)] uppercase"
           style={{
@@ -236,12 +235,12 @@ export default function Home() {
           className="mt-5 text-sm italic"
           style={{ color: "var(--color-muted)" }}
         >
-          iOS &amp; Android · Free to play
+          iOS &amp; Android
         </p>
       </section>
 
       {/* ── PHONE MOCKUP ── */}
-      <section className="relative px-4 py-12 sm:py-20">
+      <section className="relative px-4 pt-4 pb-8">
         <PhoneMockup />
         <p
           className="mt-4 text-center text-sm"
@@ -260,7 +259,7 @@ export default function Home() {
             color: "var(--color-white)",
           }}
         >
-          Everything your crew needs.
+          Built for serious play.
         </h2>
         <div
           className="mx-auto mt-4"
@@ -330,7 +329,7 @@ export default function Home() {
             PHILOSOPHY
           </span>
           <h2
-            className="mt-3 text-[2.5rem] sm:text-[3rem]"
+            className="mt-3 text-3xl sm:text-4xl"
             style={{
               fontFamily: "var(--font-anton), sans-serif",
               color: "var(--color-white)",
@@ -395,49 +394,15 @@ export default function Home() {
 
       {/* ── FOOTER ── */}
       <footer
-        className="mx-auto max-w-[900px] px-4 sm:px-6"
+        className="text-center italic"
         style={{
           borderTop: "1px solid var(--color-card-border)",
-          padding: "2rem 1rem",
+          padding: "1.5rem",
+          color: "var(--color-muted)",
+          fontSize: "0.8rem",
         }}
       >
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <LogoHero size={20} />
-            <span
-              className="font-[family-name:var(--font-anton)]"
-              style={{
-                color: "var(--color-white)",
-                fontSize: "0.875rem",
-                letterSpacing: "0.1em",
-              }}
-            >
-              OFC LEDGER
-            </span>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/rules"
-              className="transition-colors hover:text-[var(--color-gold)]"
-              style={{ color: "var(--color-muted)", fontSize: "0.875rem" }}
-            >
-              Rules
-            </Link>
-            <Link
-              href="/privacy"
-              className="transition-colors hover:text-[var(--color-gold)]"
-              style={{ color: "var(--color-muted)", fontSize: "0.875rem" }}
-            >
-              Privacy
-            </Link>
-          </div>
-        </div>
-        <p
-          className="mt-6 w-full text-center italic"
-          style={{ color: "var(--color-muted)", fontSize: "0.75rem" }}
-        >
-          © 2025 OFC Ledger · For grinders and gamblers.
-        </p>
+        © 2025 OFC Ledger · For grinders and gamblers.
       </footer>
     </main>
   );
