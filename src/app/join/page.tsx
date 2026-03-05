@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import LogoHero from "@/components/LogoHero";
 
-export default function JoinPage() {
+function JoinPageInner() {
   const searchParams = useSearchParams();
   const gameId = searchParams.get("gameId");
   const [tried, setTried] = useState(false);
@@ -62,5 +62,17 @@ export default function JoinPage() {
         Game ID: {gameId}
       </div>
     </main>
+  );
+}
+
+export default function JoinPage() {
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen flex-col items-center justify-center">
+        <p className="text-[var(--color-muted)]">Loading…</p>
+      </main>
+    }>
+      <JoinPageInner />
+    </Suspense>
   );
 }
