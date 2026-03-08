@@ -7,6 +7,7 @@ import LogoHero from "./LogoHero";
 const links = [
   { href: "/", label: "Home" },
   { href: "/rules", label: "Rules" },
+  { href: "/guide", label: "Guide →" },
   { href: "/privacy", label: "Privacy" },
 ];
 

@@ -246,7 +246,7 @@ export default function Home() {
           className="mt-4 text-center text-sm"
           style={{ color: "var(--color-muted)" }}
         >
-          Pineapple OFC · Async multiplayer
+          Pineapple OFC · Anywhere. Anytime.
         </p>
       </section>
 
