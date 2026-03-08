@@ -3,7 +3,7 @@ import Link from "next/link";
 const features = [
   {
     emoji: "🎮",
-    title: "Play on your schedule",
+    title: "Anytime. Anywhere.",
     text: "Take your turn whenever it suits you. Full Pineapple OFC online — with Fantasy Land, Spades Multiplier, The Choice, and fully customizable rules.",
   },
   {
@@ -220,7 +220,7 @@ export default function Home() {
             lineHeight: 1.7,
           }}
         >
-          The cleanest OFC app built for private groups. Async online play, an
+          The cleanest OFC app built for private groups. Instant online play, an
           AI card-camera referee, and stats that make the ledger settle itself.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
