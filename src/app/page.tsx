@@ -1,4 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
+
+const screenshots = [
+  { src: "/screenshot1.png", label: "Live play" },
+  { src: "/screenshot2.png", label: "Hand results" },
+  { src: "/screenshot3.png", label: "Stats & ledger" },
+];
 
 const features = [
   {
@@ -22,168 +29,6 @@ const features = [
     text: "Classic or Pineapple. Progressive Fantasy Land. Jokers. Adjustable time limits. Set it up the way your crew plays — not how a developer decided you should.",
   },
 ];
-
-function PhoneMockup() {
-  const cardStyle = {
-    width: 32,
-    height: 44,
-    borderRadius: 6,
-    background: "linear-gradient(135deg, #2a4a38, #1e3329)",
-    border: "1px solid rgba(255,215,0,0.3)",
-  };
-
-  return (
-    <div style={{ position: "relative" }}>
-      {/* Phone shell */}
-      <div
-        style={{
-          width: 260,
-          height: 520,
-          borderRadius: "2.5rem",
-          border: "2px solid rgba(255,215,0,0.25)",
-          background: "#0f1f18",
-          boxShadow:
-            "0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(255,215,0,0.06)",
-          margin: "0 auto",
-          position: "relative",
-        }}
-      >
-        {/* Screen */}
-        <div
-          style={{
-            width: "90%",
-            margin: "0 auto",
-            height: "92%",
-            marginTop: "4%",
-            borderRadius: "2rem",
-            background: "linear-gradient(180deg, #1a3329 0%, #0f1f18 100%)",
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            paddingTop: 12,
-            gap: 8,
-          }}
-        >
-          {/* Notch */}
-          <div
-            style={{
-              width: 60,
-              height: 8,
-              background: "#0f1f18",
-              borderRadius: "0 0 8px 8px",
-            }}
-          />
-
-          {/* TOP */}
-          <span
-            className="font-[family-name:var(--font-dm-mono)]"
-            style={{
-              color: "var(--color-muted)",
-              fontSize: 9,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-            }}
-          >
-            TOP
-          </span>
-          <div style={{ display: "flex", gap: 4 }}>
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-          </div>
-
-          {/* MID */}
-          <span
-            className="font-[family-name:var(--font-dm-mono)]"
-            style={{
-              color: "var(--color-muted)",
-              fontSize: 9,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-            }}
-          >
-            MID
-          </span>
-          <div style={{ display: "flex", gap: 4 }}>
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-          </div>
-
-          {/* BOT */}
-          <span
-            className="font-[family-name:var(--font-dm-mono)]"
-            style={{
-              color: "var(--color-muted)",
-              fontSize: 9,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-            }}
-          >
-            BOT
-          </span>
-          <div style={{ display: "flex", gap: 4 }}>
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-            <div style={cardStyle} />
-          </div>
-
-          {/* Score bar */}
-          <div
-            className="font-[family-name:var(--font-dm-mono)]"
-            style={{
-              background: "rgba(255,215,0,0.1)",
-              borderRadius: 8,
-              padding: "4px 12px",
-              fontSize: 10,
-              color: "var(--color-gold)",
-            }}
-          >
-            +9 royalties
-          </div>
-
-          {/* Fantasy Land pill */}
-          <span
-            className="font-[family-name:var(--font-anton)]"
-            style={{
-              background: "rgba(255,215,0,0.15)",
-              border: "1px solid rgba(255,215,0,0.4)",
-              color: "var(--color-gold)",
-              fontSize: 9,
-              textTransform: "uppercase",
-              letterSpacing: "0.1em",
-              padding: "4px 10px",
-              borderRadius: 9999,
-            }}
-          >
-            FANTASY LAND
-          </span>
-        </div>
-      </div>
-
-      {/* Ellipse glow */}
-      <div
-        style={{
-          width: 300,
-          height: 100,
-          background: "rgba(255,215,0,0.06)",
-          borderRadius: "50%",
-          filter: "blur(40px)",
-          position: "absolute",
-          bottom: -20,
-          left: "50%",
-          transform: "translateX(-50%)",
-          zIndex: -1,
-        }}
-      />
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -239,14 +84,62 @@ export default function Home() {
         </p>
       </section>
 
-      {/* ── PHONE MOCKUP ── */}
+      {/* ── PHONE MOCKUPS ── */}
       <section className="relative px-4 pt-4 pb-8">
-        <PhoneMockup />
+        <div
+          className="flex justify-center gap-6 overflow-x-auto sm:overflow-x-visible"
+          style={{ flexWrap: "nowrap" }}
+        >
+          {screenshots.map((s) => (
+            <div
+              key={s.src}
+              className="flex-shrink-0 flex flex-col items-center"
+            >
+              <div
+                style={{
+                  width: 200,
+                  height: 400,
+                  borderRadius: "2rem",
+                  border: "2px solid rgba(255,215,0,0.25)",
+                  background: "#0f1f18",
+                  boxShadow:
+                    "0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(255,215,0,0.06)",
+                  overflow: "hidden",
+                }}
+              >
+                <Image
+                  src={s.src}
+                  alt={s.label}
+                  width={200}
+                  height={400}
+                  style={{
+                    borderRadius: "1.8rem",
+                    objectFit: "cover",
+                    objectPosition: "top",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                />
+              </div>
+              <span
+                className="font-[family-name:var(--font-dm-mono)]"
+                style={{
+                  fontSize: 11,
+                  color: "var(--color-muted)",
+                  textAlign: "center",
+                  marginTop: 8,
+                }}
+              >
+                {s.label}
+              </span>
+            </div>
+          ))}
+        </div>
         <p
           className="mt-4 text-center text-sm"
           style={{ color: "var(--color-muted)" }}
         >
-          Pineapple OFC · Async multiplayer
+          Pineapple OFC · Anywhere. Anytime.
         </p>
       </section>
 
