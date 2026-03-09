@@ -85,7 +85,16 @@ export default function Home() {
       </section>
 
       {/* ── PHONE MOCKUPS ── */}
-      <section className="relative px-4 pt-4 pb-8">
+      <section
+        className="relative px-4 pt-4 pb-8"
+        style={{
+          overflow: "hidden",
+          maskImage:
+            "linear-gradient(to bottom, black 70%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to bottom, black 70%, transparent 100%)",
+        }}
+      >
         <div
           className="flex justify-center gap-6 overflow-x-auto sm:overflow-x-visible"
           style={{ flexWrap: "nowrap" }}
@@ -121,26 +130,9 @@ export default function Home() {
                   }}
                 />
               </div>
-              <span
-                className="font-[family-name:var(--font-dm-mono)]"
-                style={{
-                  fontSize: 11,
-                  color: "var(--color-muted)",
-                  textAlign: "center",
-                  marginTop: 8,
-                }}
-              >
-                {s.label}
-              </span>
             </div>
           ))}
         </div>
-        <p
-          className="mt-4 text-center text-sm"
-          style={{ color: "var(--color-muted)" }}
-        >
-          Pineapple OFC · Anywhere. Anytime.
-        </p>
       </section>
 
       {/* ── FEATURES ── */}
