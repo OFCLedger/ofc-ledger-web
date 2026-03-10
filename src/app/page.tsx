@@ -89,6 +89,8 @@ export default function Home() {
         className="relative px-4 pt-4 pb-8"
         style={{
           overflow: "hidden",
+          paddingLeft: "1rem",
+          paddingRight: "1rem",
           maskImage:
             "linear-gradient(to bottom, black 70%, transparent 100%)",
           WebkitMaskImage:
@@ -97,12 +99,13 @@ export default function Home() {
       >
         <div
           className="flex justify-center gap-6 overflow-x-auto sm:overflow-x-visible"
-          style={{ flexWrap: "nowrap" }}
+          style={{ flexWrap: "nowrap", scrollSnapType: "x mandatory" }}
         >
           {screenshots.map((s) => (
             <div
               key={s.src}
               className="flex-shrink-0 flex flex-col items-center"
+              style={{ scrollSnapAlign: "center" }}
             >
               <div
                 style={{
