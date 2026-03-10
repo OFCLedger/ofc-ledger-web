@@ -88,18 +88,22 @@ export default function Home() {
       <section
         className="relative px-4 pt-4 pb-8"
         style={{
-          overflow: "hidden",
           paddingLeft: "1rem",
           paddingRight: "1rem",
-          maskImage:
-            "linear-gradient(to bottom, black 70%, transparent 100%)",
-          WebkitMaskImage:
-            "linear-gradient(to bottom, black 70%, transparent 100%)",
         }}
       >
         <div
           className="flex justify-center gap-6 overflow-x-auto sm:overflow-x-visible"
-          style={{ flexWrap: "nowrap", scrollSnapType: "x mandatory" }}
+          style={{
+            flexWrap: "nowrap",
+            scrollSnapType: "x mandatory",
+            paddingLeft: "calc(50% - 320px)",
+            paddingRight: "calc(50% - 320px)",
+            maskImage:
+              "linear-gradient(to bottom, black 70%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, black 70%, transparent 100%)",
+          }}
         >
           {screenshots.map((s) => (
             <div
