@@ -80,7 +80,7 @@ export default function Home() {
           className="mt-5 text-sm italic"
           style={{ color: "var(--color-muted)" }}
         >
-          iOS &amp; Android
+          Android beta live &bull; iOS coming soon
         </p>
       </section>
 
