@@ -93,7 +93,7 @@ export default function Home() {
         }}
       >
         <div
-          className="flex gap-6 overflow-x-auto sm:overflow-x-visible"
+          className="flex gap-6 overflow-x-auto sm:justify-center sm:overflow-x-visible"
           style={{
             flexWrap: "nowrap",
             scrollSnapType: "x mandatory",
