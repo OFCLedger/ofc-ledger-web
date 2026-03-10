@@ -97,8 +97,8 @@ export default function Home() {
           style={{
             flexWrap: "nowrap",
             scrollSnapType: "x mandatory",
-            paddingLeft: "calc(50% - 320px)",
-            paddingRight: "calc(50% - 320px)",
+            paddingLeft: "calc(50% - 100px)",
+            paddingRight: "calc(50% - 100px)",
             maskImage:
               "linear-gradient(to bottom, black 70%, transparent 100%)",
             WebkitMaskImage:
