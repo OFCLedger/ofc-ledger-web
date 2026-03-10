@@ -294,7 +294,9 @@ export default function Home() {
           fontSize: "0.8rem",
         }}
       >
-        © 2025 OFC Ledger · For grinders and gamblers.
+        © 2026 OFC Ledger · For grinders and gamblers. ·{" "}
+        <Link href="/privacy" className="underline hover:text-[var(--color-gold)] transition-colors">Privacy</Link> ·{" "}
+        <Link href="/terms" className="underline hover:text-[var(--color-gold)] transition-colors">Terms</Link>
       </footer>
     </main>
   );

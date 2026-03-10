@@ -166,7 +166,9 @@ export default function FAQPage() {
           fontSize: "0.8rem",
         }}
       >
-        © 2025 OFC Ledger · For grinders and gamblers.
+        © 2026 OFC Ledger · For grinders and gamblers. ·{" "}
+        <a href="/privacy" className="underline hover:text-[var(--color-gold)] transition-colors">Privacy</a> ·{" "}
+        <a href="/terms" className="underline hover:text-[var(--color-gold)] transition-colors">Terms</a>
       </footer>
     </main>
   );
