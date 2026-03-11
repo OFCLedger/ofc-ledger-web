@@ -22,7 +22,16 @@ export default function RulesPage() {
         <main className="min-w-0 flex-1 prose-ofc">
           {/* ───── What is OFC? ───── */}
           <section id="what-is-ofc">
-            <h1>Open Face Chinese Poker — Complete Rules Guide</h1>
+            <h1
+              className="text-3xl sm:text-5xl"
+              style={{
+                fontFamily: "var(--font-anton), sans-serif",
+                color: "var(--color-white)",
+                lineHeight: 1.1,
+              }}
+            >
+              Open Face Chinese Poker — Complete Rules Guide
+            </h1>
             <h2>What is Open Face Chinese Poker?</h2>
             <p>
               Open Face Chinese Poker (OFC) is a card game for 2–4 players where each player
