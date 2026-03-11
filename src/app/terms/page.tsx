@@ -170,7 +170,7 @@ export default function TermsPage() {
         at:
       </p>
       <p>
-        Email: <strong>support@ofcledger.com</strong>
+        Email: <strong>hello@ofcledger.com</strong>
       </p>
 
       <p
