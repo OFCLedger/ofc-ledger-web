@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, DM_Sans, DM_Mono, Anton } from "next/font/google";
 import Link from "next/link";
 import Header from "@/components/Header";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -64,6 +65,7 @@ export default function RootLayout({
           <Link href="/privacy" className="underline hover:text-[var(--color-gold)] transition-colors">Privacy</Link> ·{" "}
           <Link href="/terms" className="underline hover:text-[var(--color-gold)] transition-colors">Terms</Link>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
