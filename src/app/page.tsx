@@ -70,7 +70,7 @@ export default function Home() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
-            href="https://github.com/OFCLedger/ofc-scorekeeper/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
+            href="https://github.com/OFCLedger/releases/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
             download
             className="btn-primary"
           >
