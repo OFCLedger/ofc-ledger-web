@@ -69,9 +69,13 @@ export default function Home() {
           AI card-camera referee, and stats that make the ledger settle itself.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-          <button disabled className="btn-primary opacity-70 cursor-not-allowed">
-            Download — Coming Soon
-          </button>
+          <a
+            href="https://github.com/OFCLedger/ofc-scorekeeper/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
+            download
+            className="btn-primary"
+          >
+            Download Beta
+          </a>
           <Link href="/rules" className="btn-gold">
             Learn the rules →
           </Link>

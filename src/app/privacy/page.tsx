@@ -13,8 +13,8 @@ export default function PrivacyPage() {
       </p>
 
       <p>
-        OFC Ledger is live and available to users. This policy explains what
-        data we collect, why, and how you can control it.
+        OFC Ledger is currently available as an Android beta. This policy
+        explains what data we collect, why, and how you can control it.
       </p>
 
       <h2>What We Collect</h2>
