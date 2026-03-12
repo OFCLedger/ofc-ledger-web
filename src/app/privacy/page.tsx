@@ -9,7 +9,7 @@ export default function PrivacyPage() {
     <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-16 prose-ofc">
       <h1>Privacy Policy</h1>
       <p className="text-sm text-[var(--color-muted)]/60">
-        Last updated: 2026-03-09
+        Last updated: 2026-03-12
       </p>
 
       <p>
@@ -43,8 +43,12 @@ export default function PrivacyPage() {
       <p>
         We keep your data for as long as your account is active. If you
         delete your account, your profile and authentication data are
-        permanently deleted. Game history from completed matches may be
-        retained in anonymized form for statistical purposes.
+        permanently deleted. Game history from completed matches —
+        including your username as it appeared in those games — may be
+        retained to preserve the integrity of other players&apos; records
+        and statistics. Your username in this context is a pseudonym with
+        no remaining link to your personal identity once your account is
+        deleted.
       </p>
 
       <h2>Your Rights</h2>
