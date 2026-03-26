@@ -88,15 +88,16 @@ interface PairH2H {
 function computePairH2H(me: PlayerData, opp: PlayerData): PairH2H {
   const myFoul = me.analysis.isFoul;
   const oppFoul = opp.analysis.isFoul;
+  const pairMult = Math.max(me.analysis.multiplier || 1, opp.analysis.multiplier || 1);
 
   if (myFoul && oppFoul) {
     return { opponentName: opp.player, label: "FOUL", h2h: 0 };
   }
   if (myFoul) {
-    return { opponentName: opp.player, label: "FOUL", h2h: -6 };
+    return { opponentName: opp.player, label: "FOUL", h2h: -6 * pairMult };
   }
   if (oppFoul) {
-    return { opponentName: opp.player, label: "SCOOP", h2h: 6 };
+    return { opponentName: opp.player, label: "SCOOP", h2h: 6 * pairMult };
   }
 
   const rows = ["top", "mid", "bot"] as const;
@@ -110,7 +111,7 @@ function computePairH2H(me: PlayerData, opp: PlayerData): PairH2H {
   }
 
   const scoop = wins === 3 ? 3 : losses === 3 ? -3 : 0;
-  const h2h = (wins - losses) + scoop;
+  const h2h = ((wins - losses) + scoop) * pairMult;
   const label = wins === 3 ? "SCOOP" : `${wins}\u2013${losses}`;
 
   return { opponentName: opp.player, label, h2h };
@@ -260,28 +261,26 @@ export default async function HandPage({
             .map((opp) => computePairH2H(player, opp));
           const totalH2H = pairs.reduce((sum, p) => sum + p.h2h, 0);
 
-          /* Royalties: net & gross */
+          /* Royalties: net per opponent (with pair multiplier) & gross */
           const d = player.analysis.details;
           const bruttoRoyalties =
             (d?.top?.pts || 0) + (d?.mid?.pts || 0) + (d?.bot?.pts || 0);
           const effectiveRoy = isFoul ? 0 : player.analysis.royalties;
-          const oppRoySum = players
+          const myMult = player.analysis.multiplier || 1;
+          const netRoy = players
             .filter((_, i) => i !== idx)
-            .reduce(
-              (sum, opp) =>
-                sum + (opp.analysis.isFoul ? 0 : opp.analysis.royalties),
-              0
-            );
-          const netRoy = effectiveRoy - oppRoySum;
+            .reduce((sum, opp) => {
+              const oppMult = opp.analysis.multiplier || 1;
+              const pairMult = Math.max(myMult, oppMult);
+              const oppRoy = opp.analysis.isFoul ? 0 : opp.analysis.royalties;
+              return sum + (effectiveRoy - oppRoy) * pairMult;
+            }, 0);
 
           /* Total score: use pre-computed if available, else calculate */
-          const mult = Math.max(
-            ...players.map((p) => p.analysis.multiplier || 1)
-          );
           const score =
             scores && scores[player.player] != null
               ? scores[player.player]
-              : (totalH2H + netRoy) * mult;
+              : totalH2H + netRoy;
           const scoreColor =
             score > 0
               ? "#4caf50"
