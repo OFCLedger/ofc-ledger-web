@@ -320,6 +320,22 @@ export default async function HandPage({
                         {b.label}
                       </span>
                     ))}
+                    {player.analysis.multiplier > 1 &&
+                      player.analysis.bonusMessage && (
+                        <span
+                          className="text-[10px] font-semibold"
+                          style={{
+                            background: "rgba(255,215,0,0.12)",
+                            border: "1px solid rgba(255,215,0,0.3)",
+                            borderRadius: 20,
+                            padding: "2px 8px",
+                            color: "#ffd700",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          {player.analysis.bonusMessage}
+                        </span>
+                      )}
                   </div>
                   {/* Per-opponent result lines */}
                   {pairs.length > 0 && (
@@ -369,29 +385,6 @@ export default async function HandPage({
                         >
                           ({bruttoRoyalties}p)
                         </span>
-                        {player.analysis.multiplier > 1 &&
-                          player.analysis.bonusMessage && (
-                            <>
-                              <span
-                                style={{ color: "#a3c2b0", opacity: 0.4 }}
-                              >
-                                |
-                              </span>
-                              <span
-                                className="text-[10px] font-semibold"
-                                style={{
-                                  background: "rgba(255,215,0,0.12)",
-                                  border: "1px solid rgba(255,215,0,0.3)",
-                                  borderRadius: 20,
-                                  padding: "2px 8px",
-                                  color: "#ffd700",
-                                  letterSpacing: "0.5px",
-                                }}
-                              >
-                                {player.analysis.bonusMessage}
-                              </span>
-                            </>
-                          )}
                       </div>
                     </div>
                   )}
