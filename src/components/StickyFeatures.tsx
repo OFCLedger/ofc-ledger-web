@@ -52,10 +52,9 @@ export default function StickyFeatures() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ height: "250vh", position: "relative" }}>
+    <div ref={wrapperRef} style={{ height: "250vh", position: "relative", marginBottom: "-30vh" }}>
       <div
-        className="sticky top-0 flex items-center"
-        style={{ height: "80vh" }}
+        className="sticky top-[12vh]"
       >
         <div
           className="relative mx-auto w-full max-w-[640px] px-6 sm:px-10"
@@ -83,12 +82,12 @@ export default function StickyFeatures() {
                   style={{
                     display: "block",
                     fontFamily: "var(--font-anton), sans-serif",
-                    fontSize: "clamp(80px, 18vw, 160px)",
-                    lineHeight: 0.9,
+                    fontSize: "clamp(120px, 25vw, 200px)",
+                    lineHeight: 0.85,
                     color: "rgba(255,215,0,0.06)",
                     userSelect: "none",
                     pointerEvents: "none",
-                    marginBottom: -10,
+                    marginBottom: 20,
                   }}
                 >
                   {s.num}
