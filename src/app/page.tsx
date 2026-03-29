@@ -148,6 +148,15 @@ export default function Home() {
         </h2>
       </section>
       <StickyFeatures />
+      <div className="flex justify-center px-4 pb-12 sm:hidden">
+        <a
+          href="https://github.com/OFCLedger/releases/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
+          download
+          className="btn-primary"
+        >
+          Download Beta
+        </a>
+      </div>
 
       {/* ── NO FLUFF ── */}
       <section
