@@ -145,6 +145,15 @@ export default function StickyFeatures() {
                 >
                   {s.text}
                 </p>
+
+                {/* Mobile CTA */}
+                <a
+                  href="https://github.com/OFCLedger/releases/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
+                  download
+                  className="btn-primary mt-6 inline-block sm:hidden"
+                >
+                  Download Beta
+                </a>
               </div>
             ))}
           </div>
