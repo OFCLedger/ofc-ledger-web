@@ -64,9 +64,9 @@ export default function StickyFeatures() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ height: "220vh", position: "relative" }}>
+    <div ref={wrapperRef} className="relative h-[150vh] sm:h-[220vh]">
       <div
-        className="sticky top-[12vh]"
+        className="sticky top-[8vh] sm:top-[12vh]"
         style={{
           opacity: fadeOut,
           transition: "opacity 0.15s ease-out",
