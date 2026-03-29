@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import StickyFeatures from "@/components/StickyFeatures";
 
 const screenshots = [
   { src: "/screenshot1.png", label: "Live play" },
@@ -7,28 +8,6 @@ const screenshots = [
   { src: "/screenshot3.png", label: "Stats & ledger" },
 ];
 
-const features = [
-  {
-    emoji: "🎮",
-    title: "Anytime. Anywhere.",
-    text: "Take your turn whenever it suits you. Full Pineapple OFC online — with Fantasy Land, Spades Multiplier, The Choice, and fully customizable rules.",
-  },
-  {
-    emoji: "📸",
-    title: "AI Card Camera",
-    text: "Point your camera at the board. Our Gemini-powered referee reads every card and scores the hand in seconds. No manual input, no disputes.",
-  },
-  {
-    emoji: "📊",
-    title: "Live Ledger & Stats",
-    text: "Every hand logged. See who's up, who owes what, and who hit Fantasy Land on the last card. Session stats that make settlement instant.",
-  },
-  {
-    emoji: "⚙️",
-    title: "Your Rules. Really.",
-    text: "Classic or Pineapple. Progressive Fantasy Land. Jokers. Adjustable time limits. Set it up the way your crew plays — not how a developer decided you should.",
-  },
-];
 
 export default function Home() {
   return (
@@ -147,9 +126,9 @@ export default function Home() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="mx-auto max-w-[900px] px-4 py-16 sm:px-6 sm:py-24">
+      <section className="px-4 pt-16 pb-0 text-center sm:px-6 sm:pt-24">
         <h2
-          className="text-center text-3xl sm:text-4xl"
+          className="text-3xl sm:text-4xl"
           style={{
             fontFamily: "var(--font-anton), sans-serif",
             color: "var(--color-white)",
@@ -157,53 +136,8 @@ export default function Home() {
         >
           Built for serious play.
         </h2>
-        <div
-          className="mx-auto mt-4"
-          style={{
-            width: 40,
-            height: 2,
-            background: "var(--color-gold)",
-            marginBottom: "3rem",
-          }}
-        />
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {features.map((f) => (
-            <div key={f.title} className="card">
-              <span
-                className="inline-flex items-center"
-                style={{
-                  padding: "6px 12px",
-                  borderRadius: 9999,
-                  background: "rgba(255,215,0,0.08)",
-                  border: "1px solid rgba(255,215,0,0.15)",
-                  fontSize: "1.1rem",
-                }}
-              >
-                {f.emoji}
-              </span>
-              <h3
-                className="font-[family-name:var(--font-dm-sans)] font-bold"
-                style={{
-                  color: "var(--color-white)",
-                  marginTop: 12,
-                }}
-              >
-                {f.title}
-              </h3>
-              <p
-                style={{
-                  color: "var(--color-muted)",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.7,
-                  marginTop: 8,
-                }}
-              >
-                {f.text}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
+      <StickyFeatures />
 
       {/* ── NO FLUFF ── */}
       <section
