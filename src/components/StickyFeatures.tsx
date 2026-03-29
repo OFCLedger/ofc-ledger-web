@@ -146,14 +146,6 @@ export default function StickyFeatures() {
                   {s.text}
                 </p>
 
-                {/* Mobile CTA */}
-                <a
-                  href="https://github.com/OFCLedger/releases/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
-                  download
-                  className="btn-primary mt-6 inline-block sm:hidden"
-                >
-                  Download Beta
-                </a>
               </div>
             ))}
           </div>
@@ -176,6 +168,24 @@ export default function StickyFeatures() {
                 }}
               />
             ))}
+          </div>
+
+          {/* Mobile CTA – only on step 4 */}
+          <div
+            className="mt-6 flex justify-center sm:hidden"
+            style={{
+              opacity: active === 3 ? 1 : 0,
+              transition: "opacity 0.4s ease",
+              pointerEvents: active === 3 ? "auto" : "none",
+            }}
+          >
+            <a
+              href="https://github.com/OFCLedger/releases/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
+              download
+              className="btn-primary"
+            >
+              Download Beta
+            </a>
           </div>
         </div>
       </div>
