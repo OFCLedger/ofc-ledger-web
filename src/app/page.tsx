@@ -126,7 +126,7 @@ export default function Home() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="px-4 pt-12 pb-0 text-center sm:px-6 sm:pt-16">
+      <section className="px-4 pt-12 pb-8 text-center sm:px-6 sm:pt-16 sm:pb-12">
         <span
           className="font-[family-name:var(--font-anton)] uppercase"
           style={{

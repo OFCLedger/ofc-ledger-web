@@ -28,6 +28,7 @@ const steps = [
 export default function StickyFeatures() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [fadeOut, setFadeOut] = useState(1);
 
   useEffect(() => {
     function onScroll() {
@@ -39,11 +40,22 @@ export default function StickyFeatures() {
       if (scrollable <= 0) return;
 
       const progress = Math.min(Math.max(-rect.top / scrollable, 0), 1);
+
+      // Steps use first 80% of scroll, last 20% fades out
+      const stepZone = 0.8;
+      const stepProgress = Math.min(progress / stepZone, 1);
       const step = Math.min(
-        Math.floor(progress * steps.length),
+        Math.floor(stepProgress * steps.length),
         steps.length - 1
       );
       setActive(step);
+
+      // Fade out after last step
+      if (progress > stepZone) {
+        setFadeOut(Math.max(1 - (progress - stepZone) / (1 - stepZone), 0));
+      } else {
+        setFadeOut(1);
+      }
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -52,9 +64,13 @@ export default function StickyFeatures() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ height: "250vh", position: "relative", marginBottom: "-30vh" }}>
+    <div ref={wrapperRef} style={{ height: "220vh", position: "relative" }}>
       <div
         className="sticky top-[12vh]"
+        style={{
+          opacity: fadeOut,
+          transition: "opacity 0.15s ease-out",
+        }}
       >
         <div
           className="relative mx-auto w-full max-w-[640px] px-6 sm:px-10"
