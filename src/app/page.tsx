@@ -126,9 +126,19 @@ export default function Home() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="px-4 pt-16 pb-0 text-center sm:px-6 sm:pt-24">
+      <section className="px-4 pt-12 pb-0 text-center sm:px-6 sm:pt-16">
+        <span
+          className="font-[family-name:var(--font-anton)] uppercase"
+          style={{
+            color: "var(--color-gold)",
+            letterSpacing: "0.15em",
+            fontSize: "0.85rem",
+          }}
+        >
+          FEATURES
+        </span>
         <h2
-          className="text-3xl sm:text-4xl"
+          className="mt-3 text-3xl sm:text-4xl"
           style={{
             fontFamily: "var(--font-anton), sans-serif",
             color: "var(--color-white)",

@@ -52,40 +52,16 @@ export default function StickyFeatures() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ height: "300vh", position: "relative" }}>
+    <div ref={wrapperRef} style={{ height: "250vh", position: "relative" }}>
       <div
         className="sticky top-0 flex items-center"
-        style={{ height: "100vh" }}
+        style={{ height: "80vh" }}
       >
         <div
           className="relative mx-auto w-full max-w-[640px] px-6 sm:px-10"
-          style={{ overflow: "hidden" }}
         >
-          {/* Background number */}
-          {steps.map((s, i) => (
-            <span
-              key={s.num}
-              aria-hidden
-              style={{
-                position: "absolute",
-                top: "-0.15em",
-                left: -10,
-                fontFamily: "var(--font-anton), sans-serif",
-                fontSize: "clamp(200px, 30vw, 400px)",
-                lineHeight: 0.85,
-                color: "rgba(255,215,0,0.06)",
-                userSelect: "none",
-                pointerEvents: "none",
-                opacity: active === i ? 1 : 0,
-                transition: "opacity 0.6s ease",
-              }}
-            >
-              {s.num}
-            </span>
-          ))}
-
           {/* Step content */}
-          <div style={{ position: "relative", minHeight: 240 }}>
+          <div style={{ position: "relative", minHeight: 280 }}>
             {steps.map((s, i) => (
               <div
                 key={i}
@@ -101,13 +77,30 @@ export default function StickyFeatures() {
                   pointerEvents: active === i ? "auto" : "none",
                 }}
               >
+                {/* Big number above title */}
+                <span
+                  aria-hidden
+                  style={{
+                    display: "block",
+                    fontFamily: "var(--font-anton), sans-serif",
+                    fontSize: "clamp(80px, 18vw, 160px)",
+                    lineHeight: 0.9,
+                    color: "rgba(255,215,0,0.06)",
+                    userSelect: "none",
+                    pointerEvents: "none",
+                    marginBottom: -10,
+                  }}
+                >
+                  {s.num}
+                </span>
+
                 {/* Gold line */}
                 <div
                   style={{
                     width: 48,
                     height: 2,
                     background: "var(--color-gold)",
-                    marginBottom: 24,
+                    marginBottom: 20,
                   }}
                 />
 
@@ -131,7 +124,7 @@ export default function StickyFeatures() {
                     color: "var(--color-muted)",
                     fontSize: "0.95rem",
                     lineHeight: 1.7,
-                    marginTop: 16,
+                    marginTop: 14,
                     maxWidth: 460,
                   }}
                 >
@@ -142,9 +135,7 @@ export default function StickyFeatures() {
           </div>
 
           {/* Dash-dot indicators */}
-          <div
-            className="mt-10 flex items-center gap-2"
-          >
+          <div className="mt-8 flex items-center gap-2">
             {steps.map((_, i) => (
               <span
                 key={i}
