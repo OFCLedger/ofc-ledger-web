@@ -9,22 +9,22 @@ const screenshots = [
 
 const features = [
   {
-    emoji: "🎮",
+    num: "#01",
     title: "Anytime. Anywhere.",
     text: "Take your turn whenever it suits you. Full Pineapple OFC online — with Fantasy Land, Spades Multiplier, The Choice, and fully customizable rules.",
   },
   {
-    emoji: "📸",
+    num: "#02",
     title: "AI Card Camera",
     text: "Point your camera at the board. Our Gemini-powered referee reads every card and scores the hand in seconds. No manual input, no disputes.",
   },
   {
-    emoji: "📊",
+    num: "#03",
     title: "Live Ledger & Stats",
     text: "Every hand logged. See who's up, who owes what, and who hit Fantasy Land on the last card. Session stats that make settlement instant.",
   },
   {
-    emoji: "⚙️",
+    num: "#04",
     title: "Your Rules. Really.",
     text: "Classic or Pineapple. Progressive Fantasy Land. Jokers. Adjustable time limits. Set it up the way your crew plays — not how a developer decided you should.",
   },
@@ -170,22 +170,21 @@ export default function Home() {
           {features.map((f) => (
             <div key={f.title} className="card">
               <span
-                className="inline-flex items-center"
                 style={{
-                  padding: "6px 12px",
-                  borderRadius: 9999,
-                  background: "rgba(255,215,0,0.08)",
-                  border: "1px solid rgba(255,215,0,0.15)",
-                  fontSize: "1.1rem",
+                  fontFamily: "var(--font-anton), sans-serif",
+                  color: "var(--color-gold)",
+                  fontSize: "0.85rem",
+                  letterSpacing: "0.05em",
                 }}
               >
-                {f.emoji}
+                {f.num}
               </span>
               <h3
-                className="font-[family-name:var(--font-dm-sans)] font-bold"
+                className="font-[family-name:var(--font-anton)]"
                 style={{
                   color: "var(--color-white)",
-                  marginTop: 12,
+                  fontSize: "1.5rem",
+                  marginTop: 8,
                 }}
               >
                 {f.title}
