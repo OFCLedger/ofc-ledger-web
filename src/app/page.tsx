@@ -7,6 +7,28 @@ const screenshots = [
   { src: "/screenshot3.png", label: "Stats & ledger" },
 ];
 
+const features = [
+  {
+    emoji: "🎮",
+    title: "Anytime. Anywhere.",
+    text: "Take your turn whenever it suits you. Full Pineapple OFC online — with Fantasy Land, Spades Multiplier, The Choice, and fully customizable rules.",
+  },
+  {
+    emoji: "📸",
+    title: "AI Card Camera",
+    text: "Point your camera at the board. Our Gemini-powered referee reads every card and scores the hand in seconds. No manual input, no disputes.",
+  },
+  {
+    emoji: "📊",
+    title: "Live Ledger & Stats",
+    text: "Every hand logged. See who's up, who owes what, and who hit Fantasy Land on the last card. Session stats that make settlement instant.",
+  },
+  {
+    emoji: "⚙️",
+    title: "Your Rules. Really.",
+    text: "Classic or Pineapple. Progressive Fantasy Land. Jokers. Adjustable time limits. Set it up the way your crew plays — not how a developer decided you should.",
+  },
+];
 
 export default function Home() {
   return (
@@ -144,147 +166,42 @@ export default function Home() {
             marginBottom: "3rem",
           }}
         />
-        {/* Bento grid: mobile stacked, desktop 2-col with hero left */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {/* AI Card Camera — hero */}
-          <div
-            className="sm:row-span-3"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,215,0,0.12)",
-              borderRadius: 12,
-              padding: "2rem 1.5rem",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <h3
-              style={{
-                fontFamily: "var(--font-anton), sans-serif",
-                color: "var(--color-white)",
-                fontSize: "clamp(1.75rem, 4vw, 2.5rem)",
-                lineHeight: 1.1,
-              }}
-            >
-              AI Card Camera
-            </h3>
-            <p
-              className="font-[family-name:var(--font-dm-sans)]"
-              style={{
-                color: "var(--color-muted)",
-                fontSize: "0.95rem",
-                lineHeight: 1.7,
-                marginTop: 12,
-              }}
-            >
-              Point your camera at the board. Our Gemini-powered referee
-              reads every card and scores the hand in seconds. No manual
-              input, no disputes.
-            </p>
-          </div>
-
-          {/* Live Ledger & Stats */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,215,0,0.12)",
-              borderRadius: 12,
-              padding: "1.5rem",
-            }}
-          >
-            <h3
-              style={{
-                fontFamily: "var(--font-anton), sans-serif",
-                color: "var(--color-white)",
-                fontSize: "1.25rem",
-                lineHeight: 1.15,
-              }}
-            >
-              Live Ledger &amp; Stats
-            </h3>
-            <p
-              className="font-[family-name:var(--font-dm-sans)]"
-              style={{
-                color: "var(--color-muted)",
-                fontSize: "0.85rem",
-                lineHeight: 1.65,
-                marginTop: 8,
-              }}
-            >
-              Every hand logged. See who&apos;s up, who owes what, and who
-              hit Fantasy Land on the last card. Session stats that make
-              settlement instant.
-            </p>
-          </div>
-
-          {/* Anytime. Anywhere. */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,215,0,0.12)",
-              borderRadius: 12,
-              padding: "1.5rem",
-            }}
-          >
-            <h3
-              style={{
-                fontFamily: "var(--font-anton), sans-serif",
-                color: "var(--color-white)",
-                fontSize: "1.25rem",
-                lineHeight: 1.15,
-              }}
-            >
-              Anytime. Anywhere.
-            </h3>
-            <p
-              className="font-[family-name:var(--font-dm-sans)]"
-              style={{
-                color: "var(--color-muted)",
-                fontSize: "0.85rem",
-                lineHeight: 1.65,
-                marginTop: 8,
-              }}
-            >
-              Take your turn whenever it suits you. Full Pineapple OFC
-              online — with Fantasy Land, Spades Multiplier, The Choice,
-              and fully customizable rules.
-            </p>
-          </div>
-
-          {/* Your Rules. Really. */}
-          <div
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,215,0,0.12)",
-              borderRadius: 12,
-              padding: "1.5rem",
-            }}
-          >
-            <h3
-              style={{
-                fontFamily: "var(--font-anton), sans-serif",
-                color: "var(--color-white)",
-                fontSize: "1.25rem",
-                lineHeight: 1.15,
-              }}
-            >
-              Your Rules. Really.
-            </h3>
-            <p
-              className="font-[family-name:var(--font-dm-sans)]"
-              style={{
-                color: "var(--color-muted)",
-                fontSize: "0.85rem",
-                lineHeight: 1.65,
-                marginTop: 8,
-              }}
-            >
-              Classic or Pineapple. Progressive Fantasy Land. Jokers.
-              Adjustable time limits. Set it up the way your crew plays —
-              not how a developer decided you should.
-            </p>
-          </div>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {features.map((f) => (
+            <div key={f.title} className="card">
+              <span
+                className="inline-flex items-center"
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: 9999,
+                  background: "rgba(255,215,0,0.08)",
+                  border: "1px solid rgba(255,215,0,0.15)",
+                  fontSize: "1.1rem",
+                }}
+              >
+                {f.emoji}
+              </span>
+              <h3
+                className="font-[family-name:var(--font-dm-sans)] font-bold"
+                style={{
+                  color: "var(--color-white)",
+                  marginTop: 12,
+                }}
+              >
+                {f.title}
+              </h3>
+              <p
+                style={{
+                  color: "var(--color-muted)",
+                  fontSize: "0.9rem",
+                  lineHeight: 1.7,
+                  marginTop: 8,
+                }}
+              >
+                {f.text}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 
