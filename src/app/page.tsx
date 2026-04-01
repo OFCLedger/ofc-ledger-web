@@ -52,10 +52,7 @@ export default function Home() {
             color: "var(--color-white)",
             lineHeight: 1.05,
           }}
-        >
-          OFC FOR YOUR
-          <br />
-          CREW.
+        >OFC FOR <br />YOUR CREW.
         </h1>
         <p
           className="mx-auto mt-5 font-[family-name:var(--font-dm-sans)]"
@@ -70,7 +67,7 @@ export default function Home() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <a
-            href="https://github.com/OFCLedger/releases/releases/download/v1.0.0-beta/ofc-ledger-beta.apk"
+            href="https://github.com/OFCLedger/releases/releases/download/v1.0.1-beta/ofc-ledger-beta-1.0.1.apk"
             download
             className="btn-primary"
           >
