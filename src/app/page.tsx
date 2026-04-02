@@ -64,7 +64,20 @@ export default function Home() {
           The cleanest OFC app built for private groups. Instant online play, an
           AI card-camera referee, and stats that make the ledger settle itself.
         </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <span
+          className="mt-8 font-[family-name:var(--font-anton)] uppercase"
+          style={{
+            color: "var(--color-gold)",
+            letterSpacing: "0.15em",
+            fontSize: "0.75rem",
+          }}
+        >
+          OPEN BETA — NOW LIVE
+        </span>
+        <div
+          className="mt-4"
+          style={{ display: "flex", gap: 12, alignItems: "center" }}
+        >
           <a
             href="https://github.com/OFCLedger/releases/releases/download/v1.0.1-beta/ofc-ledger-beta-1.0.1.apk"
             download
@@ -85,16 +98,10 @@ export default function Home() {
               className="mt-2 text-xs"
               style={{ color: "var(--color-muted)" }}
             >
-              Requires TestFlight — free on the App Store
+              Requires TestFlight – free on App Store
             </span>
           </div>
         </div>
-        <p
-          className="mt-5 text-sm italic"
-          style={{ color: "var(--color-muted)" }}
-        >
-          Available on Android &amp; iOS
-        </p>
       </section>
 
       {/* ── PHONE MOCKUPS ── */}
