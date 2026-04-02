@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
+
+export const revalidate = 60;
 
 const screenshots = [
   { src: "/screenshot1.png", label: "Live play" },
@@ -30,7 +33,17 @@ const features = [
   },
 ];
 
-export default function Home() {
+const BETA_OFFSET = 65;
+const BETA_CAP = 200;
+
+export default async function Home() {
+  const { count } = await supabase
+    .from("profiles")
+    .select("*", { count: "exact", head: true });
+  const total = (count ?? 0) + BETA_OFFSET;
+  const remaining = Math.max(0, BETA_CAP - total);
+  const pct = Math.min(100, (total / BETA_CAP) * 100);
+
   return (
     <main>
       {/* ── HERO ── */}
@@ -76,7 +89,14 @@ export default function Home() {
           OPEN BETA — NOW LIVE
         </span>
         <div
-          className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:items-start sm:gap-3"
+          className="mt-4"
+          style={{
+            display: "flex",
+            gap: 12,
+            alignItems: "center",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
         >
           <a
             href="https://github.com/OFCLedger/releases/releases/download/v1.0.1-beta/ofc-ledger-beta-1.0.1.apk"
@@ -95,12 +115,39 @@ export default function Home() {
               Download for iOS
             </a>
             <span
-              className="mt-2 text-xs"
+              className="mt-1 text-xs"
               style={{ color: "var(--color-muted)" }}
             >
-              Requires TestFlight – free on App Store
+              Requires TestFlight
             </span>
           </div>
+        </div>
+        {/* ── BETA COUNTER ── */}
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <div
+            style={{
+              width: 220,
+              height: 6,
+              borderRadius: 3,
+              background: "rgba(255,255,255,0.08)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                width: `${pct}%`,
+                height: "100%",
+                borderRadius: 3,
+                background: "var(--color-gold)",
+              }}
+            />
+          </div>
+          <span
+            className="text-sm font-[family-name:var(--font-dm-sans)]"
+            style={{ color: "var(--color-gold)" }}
+          >
+            {remaining} spots remaining — first come, first served.
+          </span>
         </div>
       </section>
 
