@@ -3,6 +3,7 @@ import Image from "next/image";
 const screenshots = [
   { src: "/screenshot1.png", label: "Live play" },
   { src: "/screenshot2.png", label: "Hand results" },
+  { src: "/screenshot4.png", label: "Card camera" },
   { src: "/screenshot3.png", label: "Stats & ledger" },
 ];
 
@@ -76,7 +77,7 @@ export default function Home() {
         </span>
         <div
           className="mt-4"
-          style={{ display: "flex", gap: 12, alignItems: "center" }}
+          style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
         >
           <a
             href="https://github.com/OFCLedger/releases/releases/download/v1.0.1-beta/ofc-ledger-beta-1.0.1.apk"
