@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 const screenshots = [
   { src: "/screenshot1.png", label: "Live play" },
@@ -71,17 +70,30 @@ export default function Home() {
             download
             className="btn-primary"
           >
-            Download Beta
+            Download for Android
           </a>
-          <Link href="/rules" className="btn-gold">
-            Learn the rules →
-          </Link>
+          <div className="flex flex-col items-center">
+            <a
+              href="https://testflight.apple.com/join/xNxPJuVr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              Download for iOS
+            </a>
+            <span
+              className="mt-2 text-xs"
+              style={{ color: "var(--color-muted)" }}
+            >
+              Requires TestFlight — free on the App Store
+            </span>
+          </div>
         </div>
         <p
           className="mt-5 text-sm italic"
           style={{ color: "var(--color-muted)" }}
         >
-          Android beta live &bull; iOS coming soon
+          Available on Android &amp; iOS
         </p>
       </section>
 
