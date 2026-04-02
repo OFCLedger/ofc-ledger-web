@@ -76,8 +76,7 @@ export default function Home() {
           OPEN BETA — NOW LIVE
         </span>
         <div
-          className="mt-4"
-          style={{ display: "flex", gap: 12, alignItems: "flex-start" }}
+          className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:items-start sm:gap-3"
         >
           <a
             href="https://github.com/OFCLedger/releases/releases/download/v1.0.1-beta/ofc-ledger-beta-1.0.1.apk"
