@@ -41,7 +41,6 @@ export default async function Home() {
     .from("profiles")
     .select("*", { count: "exact", head: true });
   const total = (count ?? 0) + BETA_OFFSET;
-  const remaining = Math.max(0, BETA_CAP - total);
   const pct = Math.min(100, (total / BETA_CAP) * 100);
 
   return (
@@ -93,7 +92,7 @@ export default async function Home() {
           style={{
             display: "flex",
             gap: 12,
-            alignItems: "center",
+            alignItems: "flex-start",
             flexWrap: "wrap",
             justifyContent: "center",
           }}
@@ -146,7 +145,7 @@ export default async function Home() {
             className="text-sm font-[family-name:var(--font-dm-sans)]"
             style={{ color: "var(--color-gold)" }}
           >
-            {remaining} spots remaining — first come, first served.
+            {total}/200 beta spots claimed – first come first served.
           </span>
         </div>
       </section>
