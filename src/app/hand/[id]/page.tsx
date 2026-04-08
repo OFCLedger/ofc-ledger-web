@@ -292,7 +292,7 @@ export default async function HandPage({
           const badges: { label: string; bg: string }[] = [];
           if (player.fantasyLand?.isActive) {
             const cards = (player.fantasyLand as any).cardsToReceive || 14;
-            badges.push({ label: `FL${cards}`, bg: "#9c27b0" });
+            badges.push({ label: `FL${cards}`, bg: "#444" });
           }
           if (player.choice?.hasAbility) {
             badges.push({ label: "TC", bg: "#0066cc" });
@@ -302,15 +302,16 @@ export default async function HandPage({
           const entersFL = !player.fantasyLand?.isActive && fantasyQualifies;
           const staysInFL = player.fantasyLand?.isActive && fantasyQualifies;
 
+          const rewardBadges: { label: string; bg: string }[] = [];
           if (entersFL || staysInFL) {
             const cards = staysInFL
               ? ((player.fantasyLand as any).cardsToReceive || 14)
               : 14;
-            badges.push({ label: `+FL${cards}`, bg: "#6a0dad" });
+            rewardBadges.push({ label: `+FL${cards}`, bg: "#9c27b0" });
           }
 
           if (!player.fantasyLand?.isActive && (player.analysis as any).hasSpade2) {
-            badges.push({ label: "+TC", bg: "#0066cc" });
+            rewardBadges.push({ label: "+TC", bg: "#0066cc" });
           }
 
           return (
@@ -412,6 +413,24 @@ export default async function HandPage({
                   >
                     {score > 0 ? `+${score}` : score}
                   </div>
+                  {rewardBadges.length > 0 && (
+                    <div className="mt-1 flex gap-1">
+                      {rewardBadges.map((b, i) => (
+                        <span
+                          key={i}
+                          className="text-[10px] font-semibold text-white"
+                          style={{
+                            backgroundColor: b.bg,
+                            borderRadius: 20,
+                            padding: "2px 7px",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          {b.label}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
