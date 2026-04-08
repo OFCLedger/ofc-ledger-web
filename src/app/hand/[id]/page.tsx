@@ -303,22 +303,6 @@ export default async function HandPage({
             badges.push({ label: "TC", bg: "#0066cc" });
           }
 
-          const fantasyQualifies = (player.analysis as any).fantasyQualifies || false;
-          const entersFL = !player.fantasyLand?.isActive && fantasyQualifies;
-          const staysInFL = player.fantasyLand?.isActive && fantasyQualifies;
-
-          const rewardBadges: { label: string; bg: string }[] = [];
-          if (entersFL || staysInFL) {
-            const cards = staysInFL
-              ? ((player.fantasyLand as any).cardsToReceive || 14)
-              : 14;
-            rewardBadges.push({ label: `+FL${cards}`, bg: "#9c27b0" });
-          }
-
-          if (!player.fantasyLand?.isActive && (player.analysis as any).hasSpade2) {
-            rewardBadges.push({ label: "+TC", bg: "#0066cc" });
-          }
-
           return (
             <div key={idx} className="rounded-[14px] bg-black/20 p-4">
               {/* Player header */}
@@ -411,31 +395,11 @@ export default async function HandPage({
                     </div>
                   )}
                 </div>
-                <div className="flex flex-col items-end">
-                  <div
-                    className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
-                    style={{ color: scoreColor }}
-                  >
-                    {score > 0 ? `+${score}` : score}
-                  </div>
-                  {rewardBadges.length > 0 && (
-                    <div className="mt-1 flex gap-1">
-                      {rewardBadges.map((b, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] font-semibold text-white"
-                          style={{
-                            backgroundColor: b.bg,
-                            borderRadius: 20,
-                            padding: "2px 7px",
-                            letterSpacing: "0.5px",
-                          }}
-                        >
-                          {b.label}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                <div
+                  className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
+                  style={{ color: scoreColor }}
+                >
+                  {score > 0 ? `+${score}` : score}
                 </div>
               </div>
 
@@ -469,20 +433,20 @@ export default async function HandPage({
         <span className="mt-0.5 text-[11px] italic text-[var(--color-muted)]">
           For grinders and gamblers.
         </span>
-        <span
+        <a
+          href="/"
           className="mt-4 text-[12px] uppercase"
           style={{
             border: "1px solid rgba(255,215,0,0.3)",
             borderRadius: 20,
             padding: "8px 20px",
             color: "#ffd700",
-            opacity: 0.5,
             letterSpacing: "2px",
-            cursor: "default",
+            textDecoration: "none",
           }}
         >
-          Download — Coming Soon
-        </span>
+          Beta Live — Download Now
+        </a>
       </div>
     </main>
   );
