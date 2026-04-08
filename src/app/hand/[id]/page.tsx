@@ -40,13 +40,18 @@ const suitMap: Record<string, string> = {
   d: "\u2666",
   c: "\u2663",
 };
-const redSuits = new Set(["h", "d"]);
+const suitColorMap: Record<string, string> = {
+  s: "#1a1a1a",
+  h: "#cc2200",
+  d: "#2f52ba",
+  c: "#2e7d32",
+};
 const validSuits = new Set(["h", "s", "d", "c"]);
 
 function parseCard(str: string) {
   // "JJ" → joker displayed as Jack
   if (str === "JJ") {
-    return { rank: "J", suit: "", isRed: false, isJoker: true };
+    return { rank: "J", suit: "", suitChar: "", isJoker: true };
   }
 
   let rank: string;
@@ -72,7 +77,7 @@ function parseCard(str: string) {
   return {
     rank,
     suit: suitMap[suitChar] ?? "",
-    isRed: redSuits.has(suitChar),
+    suitChar,
     isJoker,
   };
 }
@@ -153,7 +158,7 @@ function PlayingCard({
   overlap: boolean;
   isLast: boolean;
 }) {
-  const { rank, suit, isRed, isJoker } = parseCard(code);
+  const { rank, suit, suitChar, isJoker } = parseCard(code);
 
   const baseShadow = overlap
     ? "-2px 0 4px rgba(0,0,0,0.3)"
@@ -167,7 +172,7 @@ function PlayingCard({
         width: 36,
         height: 52,
         backgroundColor: "#f5f0e8",
-        color: isRed ? "#cc2200" : "#1a1a1a",
+        color: suitColorMap[suitChar] || "#1a1a1a",
         border: isJoker ? "2px solid #ffd700" : undefined,
         boxShadow: isJoker ? `${baseShadow}, ${jokerShadow}` : baseShadow,
         marginRight: overlap && !isLast ? -10 : 0,
