@@ -20,7 +20,7 @@ interface PlayerAnalysis {
 interface PlayerData {
   player: string;
   analysis: PlayerAnalysis;
-  fantasyLand: { isActive: boolean };
+  fantasyLand: { isActive: boolean; cardsToReceive?: number };
   choice?: { hasAbility: boolean };
 }
 
@@ -291,10 +291,26 @@ export default async function HandPage({
           /* Badges */
           const badges: { label: string; bg: string }[] = [];
           if (player.fantasyLand?.isActive) {
-            badges.push({ label: "FL", bg: "#9c27b0" });
+            const cards = (player.fantasyLand as any).cardsToReceive || 14;
+            badges.push({ label: `FL${cards}`, bg: "#9c27b0" });
           }
           if (player.choice?.hasAbility) {
             badges.push({ label: "TC", bg: "#0066cc" });
+          }
+
+          const fantasyQualifies = (player.analysis as any).fantasyQualifies || false;
+          const entersFL = !player.fantasyLand?.isActive && fantasyQualifies;
+          const staysInFL = player.fantasyLand?.isActive && fantasyQualifies;
+
+          if (entersFL || staysInFL) {
+            const cards = staysInFL
+              ? ((player.fantasyLand as any).cardsToReceive || 14)
+              : 14;
+            badges.push({ label: `+FL${cards}`, bg: "#6a0dad" });
+          }
+
+          if (!player.fantasyLand?.isActive && (player.analysis as any).hasSpade2) {
+            badges.push({ label: "+TC", bg: "#0066cc" });
           }
 
           return (
