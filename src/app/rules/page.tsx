@@ -287,6 +287,18 @@ export default function RulesPage() {
               declare which card it represents. Once confirmed the value is locked for that hand.
               If time runs out jokers are auto-defined as 2♥, 3♥, or 4♥.
             </p>
+
+            <h3>Shooting the Moon</h3>
+            <p>
+              If your bottom row is Jack-high or worse — no pair, no flush, no straight — you
+              shoot the moon. Instead of comparing hand by hand, you score a fixed number of
+              points against each opponent (default 20). No royalties are added, but Spades
+              multipliers still apply.
+            </p>
+            <p>
+              Foul as normal if your board is invalid. Whether Shooting the Moon is valid from
+              Fantasy Land is configurable in game settings.
+            </p>
           </section>
 
           {/* ───── App Settings ───── */}
