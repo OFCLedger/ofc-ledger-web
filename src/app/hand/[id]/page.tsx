@@ -417,21 +417,21 @@ export default function HandPage() {
       {/* Player cards */}
       <div className="flex flex-col gap-4">
         {players.map((player, idx) => {
-          const isFoul = player.analysis.isFoul;
+          /* Header uses original (final) data for scores */
+          const orig = originalPlayers[idx];
+          const origFoul = orig.analysis.isFoul;
 
-          /* Pairwise results vs each opponent */
-          const pairs = players
+          const pairs = originalPlayers
             .filter((_, i) => i !== idx)
-            .map((opp) => computePairH2H(player, opp));
+            .map((opp) => computePairH2H(orig, opp));
           const totalH2H = pairs.reduce((sum, p) => sum + p.h2h, 0);
 
-          /* Royalties: net per opponent (with pair multiplier) & gross */
-          const d = player.analysis.details;
+          const origD = orig.analysis.details;
           const bruttoRoyalties =
-            (d?.top?.pts || 0) + (d?.mid?.pts || 0) + (d?.bot?.pts || 0);
-          const effectiveRoy = isFoul ? 0 : player.analysis.royalties;
-          const myMult = player.analysis.multiplier || 1;
-          const netRoy = players
+            (origD?.top?.pts || 0) + (origD?.mid?.pts || 0) + (origD?.bot?.pts || 0);
+          const effectiveRoy = origFoul ? 0 : orig.analysis.royalties;
+          const myMult = orig.analysis.multiplier || 1;
+          const netRoy = originalPlayers
             .filter((_, i) => i !== idx)
             .reduce((sum, opp) => {
               const oppMult = opp.analysis.multiplier || 1;
@@ -440,10 +440,9 @@ export default function HandPage() {
               return sum + (effectiveRoy - oppRoy) * pairMult;
             }, 0);
 
-          /* Total score: use pre-computed only on final round */
           const score =
-            isFinalRound && scores && scores[player.player] != null
-              ? scores[player.player]
+            scores && scores[orig.player] != null
+              ? scores[orig.player]
               : totalH2H + netRoy;
           const scoreColor =
             score > 0
@@ -452,14 +451,14 @@ export default function HandPage() {
                 ? "#ef5350"
                 : "var(--color-muted)";
 
-          /* Badges */
+          /* Badges from original data */
           const badges: { label: string; bg: string }[] = [];
-          if (player.fantasyLand?.isActive) {
+          if (orig.fantasyLand?.isActive) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const cards = (player.fantasyLand as any).cardsToReceive || 14;
+            const cards = (orig.fantasyLand as any).cardsToReceive || 14;
             badges.push({ label: `FL${cards}`, bg: "#444" });
           }
-          if (player.choice?.hasAbility) {
+          if (orig.choice?.hasAbility) {
             badges.push({ label: "TC", bg: "#0066cc" });
           }
 
@@ -486,8 +485,8 @@ export default function HandPage() {
                         {b.label}
                       </span>
                     ))}
-                    {player.analysis.multiplier > 1 &&
-                      player.analysis.bonusMessage && (
+                    {orig.analysis.multiplier > 1 &&
+                      orig.analysis.bonusMessage && (
                         <span
                           className="text-[10px] font-semibold"
                           style={{
@@ -499,7 +498,7 @@ export default function HandPage() {
                             letterSpacing: "0.5px",
                           }}
                         >
-                          {player.analysis.bonusMessage}
+                          {orig.analysis.bonusMessage}
                         </span>
                       )}
                   </div>
@@ -546,7 +545,7 @@ export default function HandPage() {
                         <span
                           style={{
                             color: "#ffd700",
-                            opacity: isFoul && isFinalRound ? 0.5 : 1,
+                            opacity: origFoul ? 0.5 : 1,
                           }}
                         >
                           ({bruttoRoyalties}p)
@@ -567,7 +566,7 @@ export default function HandPage() {
               {/* Board — dim if foul, only on final round */}
               <div
                 className="flex flex-col gap-2"
-                style={{ opacity: isFoul && isFinalRound ? 0.5 : 1 }}
+                style={{ opacity: origFoul && isFinalRound ? 0.5 : 1 }}
               >
                 <BoardRow label="TOP" data={player.analysis.details.top} slotCount={3} />
                 <BoardRow label="MID" data={player.analysis.details.mid} slotCount={5} />
