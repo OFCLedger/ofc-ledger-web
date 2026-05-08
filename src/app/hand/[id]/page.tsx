@@ -206,28 +206,48 @@ function PlayingCard({
 function BoardRow({
   label,
   data,
+  slotCount,
 }: {
   label: string;
   data: CardDetail;
+  slotCount?: number;
 }) {
   const validCards = data.cards.filter((c) => c != null && c !== "");
-  const overlap = validCards.length > 1;
+  const totalSlots = slotCount ?? validCards.length;
+  const overlap = totalSlots > 1;
 
   return (
     <div>
       <div className="mb-1 font-[family-name:var(--font-dm-mono)] text-[9px] uppercase tracking-wider text-[var(--color-muted)]">
         {label}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2" style={{ minHeight: 52 }}>
         <div className="flex">
-          {validCards.map((c, i) => (
-            <PlayingCard
-              key={i}
-              code={c}
-              overlap={overlap}
-              isLast={i === validCards.length - 1}
-            />
-          ))}
+          {Array.from({ length: totalSlots }, (_, i) => {
+            const card = validCards[i];
+            if (card) {
+              return (
+                <PlayingCard
+                  key={i}
+                  code={card}
+                  overlap={overlap}
+                  isLast={i === totalSlots - 1}
+                />
+              );
+            }
+            return (
+              <span
+                key={i}
+                className="inline-block rounded-[6px]"
+                style={{
+                  width: 36,
+                  height: 52,
+                  border: "1px dashed rgba(255,255,255,0.08)",
+                  marginRight: overlap && i !== totalSlots - 1 ? -10 : 0,
+                }}
+              />
+            );
+          })}
         </div>
         <div className="ml-auto flex min-w-[120px] flex-col items-end">
           <span className="font-[family-name:var(--font-dm-mono)] text-[11px] italic text-[var(--color-muted)]">
@@ -393,7 +413,7 @@ export default function HandPage() {
   return (
     <main
       className="mx-auto max-w-[480px] px-4 py-6"
-      style={{ paddingBottom: isReplayAvailable ? 80 : undefined }}
+      style={{ paddingBottom: isReplayAvailable ? 96 : undefined }}
     >
       {/* Player cards */}
       <div className="flex flex-col gap-4">
@@ -484,8 +504,8 @@ export default function HandPage() {
                         </span>
                       )}
                   </div>
-                  {/* Per-opponent result lines */}
-                  {pairs.length > 0 && (
+                  {/* Per-opponent result lines — only on final round */}
+                  {isFinalRound && pairs.length > 0 && (
                     <div className="mt-1 flex flex-col gap-0.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
                       {pairs.map((pair, i) => (
                         <div key={i} className="flex items-center gap-1.5">
@@ -536,22 +556,25 @@ export default function HandPage() {
                     </div>
                   )}
                 </div>
-                <div
-                  className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
-                  style={{ color: scoreColor }}
-                >
-                  {score > 0 ? `+${score}` : score}
-                </div>
+                {/* Score — only on final round */}
+                {isFinalRound && (
+                  <div
+                    className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
+                    style={{ color: scoreColor }}
+                  >
+                    {score > 0 ? `+${score}` : score}
+                  </div>
+                )}
               </div>
 
-              {/* Board — dim if foul */}
+              {/* Board — dim if foul, only on final round */}
               <div
                 className="flex flex-col gap-2"
-                style={{ opacity: isFoul ? 0.5 : 1 }}
+                style={{ opacity: isFoul && isFinalRound ? 0.5 : 1 }}
               >
-                <BoardRow label="TOP" data={player.analysis.details.top} />
-                <BoardRow label="MID" data={player.analysis.details.mid} />
-                <BoardRow label="BOT" data={player.analysis.details.bot} />
+                <BoardRow label="TOP" data={player.analysis.details.top} slotCount={3} />
+                <BoardRow label="MID" data={player.analysis.details.mid} slotCount={5} />
+                <BoardRow label="BOT" data={player.analysis.details.bot} slotCount={5} />
               </div>
 
             </div>
@@ -593,7 +616,7 @@ export default function HandPage() {
       {/* ── Replay navigation bar ── */}
       {isReplayAvailable && (
         <div
-          className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-5 py-3"
+          className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-5 pb-6 pt-3"
           style={{
             background: "linear-gradient(to top, #0f1f18, #152b22)",
             borderTop: "1px solid rgba(255, 215, 0, 0.15)",
@@ -616,7 +639,7 @@ export default function HandPage() {
             &#x2039;
           </button>
           <span className="font-[family-name:var(--font-dm-mono)] text-sm font-bold text-[var(--color-gold)]">
-            ROUND {replayRound + 1}/{totalSnapshots}
+            DRAW {replayRound + 1}/{totalSnapshots}
           </span>
           <button
             onClick={() => navigateReplay("next")}
