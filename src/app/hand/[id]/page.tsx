@@ -212,8 +212,7 @@ function BoardRow({
   data: CardDetail;
   slotCount?: number;
 }) {
-  const validCards = data.cards.filter((c) => c != null && c !== "");
-  const totalSlots = slotCount ?? validCards.length;
+  const totalSlots = slotCount ?? data.cards.length;
   const overlap = totalSlots > 1;
 
   return (
@@ -224,8 +223,8 @@ function BoardRow({
       <div className="flex items-center gap-2" style={{ minHeight: 52 }}>
         <div className="flex">
           {Array.from({ length: totalSlots }, (_, i) => {
-            const card = validCards[i];
-            if (card) {
+            const card = data.cards[i];
+            if (card && card !== "") {
               return (
                 <PlayingCard
                   key={i}
@@ -238,11 +237,10 @@ function BoardRow({
             return (
               <span
                 key={i}
-                className="inline-block rounded-[6px]"
+                className="inline-block"
                 style={{
                   width: 36,
                   height: 52,
-                  border: "1px dashed rgba(255,255,255,0.08)",
                   marginRight: overlap && i !== totalSlots - 1 ? -10 : 0,
                 }}
               />
@@ -353,15 +351,15 @@ export default function HandPage() {
       );
       if (!snapshotPlayer) return original;
 
-      const top = (snapshotPlayer.board.top || []).filter(
-        (c): c is string => c != null && c !== ""
-      );
-      const mid = (snapshotPlayer.board.mid || []).filter(
-        (c): c is string => c != null && c !== ""
-      );
-      const bot = (snapshotPlayer.board.bot || []).filter(
-        (c): c is string => c != null && c !== ""
-      );
+      // Raw slot arrays — preserve null positions for exact card placement
+      const rawTop = snapshotPlayer.board.top || [];
+      const rawMid = snapshotPlayer.board.mid || [];
+      const rawBot = snapshotPlayer.board.bot || [];
+
+      // Filter for analysis computation only
+      const top = rawTop.filter((c): c is string => c != null && c !== "");
+      const mid = rawMid.filter((c): c is string => c != null && c !== "");
+      const bot = rawBot.filter((c): c is string => c != null && c !== "");
 
       const analysis = analyzeHand(
         { top, middle: mid, bottom: bot },
@@ -373,9 +371,10 @@ export default function HandPage() {
         analysis: {
           isFoul: analysis.isFoul,
           details: {
-            top: analysis.details.top,
-            mid: analysis.details.mid,
-            bot: analysis.details.bot,
+            // Override cards with raw slots so BoardRow can place them exactly
+            top: { ...analysis.details.top, cards: rawTop as string[] },
+            mid: { ...analysis.details.mid, cards: rawMid as string[] },
+            bot: { ...analysis.details.bot, cards: rawBot as string[] },
           },
           royalties: analysis.royalties,
           multiplier: analysis.multiplier,
@@ -504,67 +503,76 @@ export default function HandPage() {
                         </span>
                       )}
                   </div>
-                  {/* Per-opponent result lines — only on final round */}
-                  {isFinalRound && pairs.length > 0 && (
+                  {/* Per-opponent result lines — structure always, values on final */}
+                  {pairs.length > 0 && (
                     <div className="mt-1 flex flex-col gap-0.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
                       {pairs.map((pair, i) => (
                         <div key={i} className="flex items-center gap-1.5">
                           <span style={{ color: "#a3c2b0" }}>
                             vs {pair.opponentName}:
                           </span>
-                          <span style={{ color: "#ffd700" }}>
-                            {pair.label}
-                          </span>
-                          <span
-                            style={{
-                              color:
-                                pair.h2h > 0
-                                  ? "#4caf50"
-                                  : pair.h2h < 0
-                                    ? "#ef5350"
-                                    : "#a3c2b0",
-                            }}
-                          >
-                            {fmtScore(pair.h2h)}
-                          </span>
+                          {isFinalRound && (
+                            <>
+                              <span style={{ color: "#ffd700" }}>
+                                {pair.label}
+                              </span>
+                              <span
+                                style={{
+                                  color:
+                                    pair.h2h > 0
+                                      ? "#4caf50"
+                                      : pair.h2h < 0
+                                        ? "#ef5350"
+                                        : "#a3c2b0",
+                                }}
+                              >
+                                {fmtScore(pair.h2h)}
+                              </span>
+                            </>
+                          )}
                         </div>
                       ))}
                       {/* Royalties line */}
                       <div className="flex items-center gap-1.5">
                         <span style={{ color: "#ffd700" }}>{"\u{1F451}"}</span>
-                        <span
-                          style={{
-                            color:
-                              netRoy > 0
-                                ? "#4caf50"
-                                : netRoy < 0
-                                  ? "#ef5350"
-                                  : "#a3c2b0",
-                          }}
-                        >
-                          {fmtScore(netRoy)}
-                        </span>
-                        <span
-                          style={{
-                            color: "#ffd700",
-                            opacity: isFoul ? 0.5 : 1,
-                          }}
-                        >
-                          ({bruttoRoyalties}p)
-                        </span>
+                        {isFinalRound && (
+                          <>
+                            <span
+                              style={{
+                                color:
+                                  netRoy > 0
+                                    ? "#4caf50"
+                                    : netRoy < 0
+                                      ? "#ef5350"
+                                      : "#a3c2b0",
+                              }}
+                            >
+                              {fmtScore(netRoy)}
+                            </span>
+                            <span
+                              style={{
+                                color: "#ffd700",
+                                opacity: isFoul ? 0.5 : 1,
+                              }}
+                            >
+                              ({bruttoRoyalties}p)
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                   )}
                 </div>
-                {/* Score — only on final round */}
-                {isFinalRound && (
-                  <div
-                    className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
-                    style={{ color: scoreColor }}
-                  >
-                    {score > 0 ? `+${score}` : score}
-                  </div>
-                )}
+                {/* Score — always present, invisible on intermediate rounds */}
+                <div
+                  className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
+                  style={{
+                    color: scoreColor,
+                    visibility: isFinalRound ? "visible" : "hidden",
+                  }}
+                >
+                  {score > 0 ? `+${score}` : score}
+                </div>
               </div>
 
               {/* Board — dim if foul, only on final round */}
