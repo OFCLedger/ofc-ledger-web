@@ -1,4 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
+"use client";
+
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { analyzeHand } from "@/lib/scoring";
 
 /* ── Types ── */
 
@@ -30,6 +35,18 @@ interface SharedHand {
   hand_data: any;
   round_index: number;
   game_id?: string;
+}
+
+interface ReplaySnapshot {
+  round: number;
+  players: {
+    id: string;
+    board: {
+      top: (string | null)[];
+      mid: (string | null)[];
+      bot: (string | null)[];
+    };
+  }[];
 }
 
 /* ── Card parsing ── */
@@ -193,7 +210,8 @@ function BoardRow({
   label: string;
   data: CardDetail;
 }) {
-  const overlap = data.cards.length > 1;
+  const validCards = data.cards.filter((c) => c != null && c !== "");
+  const overlap = validCards.length > 1;
 
   return (
     <div>
@@ -202,12 +220,12 @@ function BoardRow({
       </div>
       <div className="flex items-center gap-2">
         <div className="flex">
-          {data.cards.map((c, i) => (
+          {validCards.map((c, i) => (
             <PlayingCard
               key={i}
               code={c}
               overlap={overlap}
-              isLast={i === data.cards.length - 1}
+              isLast={i === validCards.length - 1}
             />
           ))}
         </div>
@@ -228,33 +246,155 @@ function BoardRow({
 
 /* ── Page ── */
 
-export default async function HandPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default function HandPage() {
+  const { id } = useParams<{ id: string }>();
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  const [originalPlayers, setOriginalPlayers] = useState<PlayerData[]>([]);
+  const [scores, setScores] = useState<Record<string, number> | null>(null);
+  const [replayData, setReplayData] = useState<ReplaySnapshot[] | null>(null);
+  const [replayRound, setReplayRound] = useState(-1);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchData = async () => {
+      const { data, error } = await supabase
+        .from("shared_hands")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (!data || error) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+
+      const hand = data as SharedHand;
+      const raw = hand.hand_data;
+      const players: PlayerData[] = Array.isArray(raw) ? raw : (raw?.hands || []);
+      const scoresData: Record<string, number> | null = Array.isArray(raw) ? null : (raw?.scores || null);
+
+      setOriginalPlayers(players);
+      setScores(scoresData);
+
+      // Source 1: replay_data embedded in hand_data (shared from play.tsx review mode)
+      let rd: ReplaySnapshot[] | null = null;
+      if (!Array.isArray(raw) && raw?.replay_data) {
+        rd = raw.replay_data;
+      }
+
+      // Source 2: fallback to game_rounds query (requires anon RLS policy)
+      if (!rd && hand.game_id) {
+        const { data: roundRow } = await supabase
+          .from("game_rounds")
+          .select("replay_data")
+          .eq("game_id", hand.game_id)
+          .eq("hand_number", hand.round_index + 1)
+          .single();
+        if (roundRow?.replay_data) {
+          rd = roundRow.replay_data;
+        }
+      }
+
+      if (rd && rd.length > 0) {
+        setReplayData(rd);
+        setReplayRound(rd.length - 1); // Start on final state
+      }
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [id]);
+
+  /* ── Replay board computation ── */
+
+  const spadesActive = useMemo(
+    () => originalPlayers.some((p) => (p.analysis?.multiplier || 1) > 1),
+    [originalPlayers]
   );
 
-  const { data, error } = await supabase
-    .from("shared_hands")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const totalSnapshots = replayData?.length || 0;
+  const isReplayAvailable = totalSnapshots > 1;
+  const isFinalRound = !replayData || replayRound === totalSnapshots - 1;
 
-  if (!data || error) return <NotFound />;
+  const players = useMemo(() => {
+    if (!replayData || replayRound < 0) return originalPlayers;
 
-  const hand = data as SharedHand;
-  const raw = hand.hand_data;
-  const players: PlayerData[] = Array.isArray(raw) ? raw : (raw?.hands || []);
-  const scores: Record<string, number> | null = Array.isArray(raw) ? null : (raw?.scores || null);
+    const snapshot = replayData[replayRound];
+    if (!snapshot) return originalPlayers;
+
+    return originalPlayers.map((original) => {
+      const snapshotPlayer = snapshot.players.find(
+        (sp) => sp.id === original.player
+      );
+      if (!snapshotPlayer) return original;
+
+      const top = (snapshotPlayer.board.top || []).filter(
+        (c): c is string => c != null && c !== ""
+      );
+      const mid = (snapshotPlayer.board.mid || []).filter(
+        (c): c is string => c != null && c !== ""
+      );
+      const bot = (snapshotPlayer.board.bot || []).filter(
+        (c): c is string => c != null && c !== ""
+      );
+
+      const analysis = analyzeHand(
+        { top, middle: mid, bottom: bot },
+        spadesActive
+      );
+
+      return {
+        ...original,
+        analysis: {
+          isFoul: analysis.isFoul,
+          details: {
+            top: analysis.details.top,
+            mid: analysis.details.mid,
+            bot: analysis.details.bot,
+          },
+          royalties: analysis.royalties,
+          multiplier: analysis.multiplier,
+          bonusMessage: analysis.bonusMessage,
+        },
+      };
+    });
+  }, [originalPlayers, replayData, replayRound, spadesActive]);
+
+  /* ── Replay navigation ── */
+
+  const navigateReplay = (direction: "prev" | "next") => {
+    if (!replayData || totalSnapshots <= 1) return;
+    setReplayRound((prev) =>
+      direction === "next"
+        ? (prev + 1) % totalSnapshots
+        : (prev - 1 + totalSnapshots) % totalSnapshots
+    );
+  };
+
+  /* ── Loading / not found ── */
+
+  if (loading) {
+    return (
+      <main className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="font-[family-name:var(--font-anton)] text-lg text-[var(--color-gold)]">
+          Loading...
+        </div>
+      </main>
+    );
+  }
+
+  if (notFound || originalPlayers.length === 0) return <NotFound />;
 
   return (
-    <main className="mx-auto max-w-[480px] px-4 py-6">
+    <main
+      className="mx-auto max-w-[480px] px-4 py-6"
+      style={{ paddingBottom: isReplayAvailable ? 80 : undefined }}
+    >
       {/* Player cards */}
       <div className="flex flex-col gap-4">
         {players.map((player, idx) => {
@@ -281,9 +421,9 @@ export default async function HandPage({
               return sum + (effectiveRoy - oppRoy) * pairMult;
             }, 0);
 
-          /* Total score: use pre-computed if available, else calculate */
+          /* Total score: use pre-computed only on final round */
           const score =
-            scores && scores[player.player] != null
+            isFinalRound && scores && scores[player.player] != null
               ? scores[player.player]
               : totalH2H + netRoy;
           const scoreColor =
@@ -296,6 +436,7 @@ export default async function HandPage({
           /* Badges */
           const badges: { label: string; bg: string }[] = [];
           if (player.fantasyLand?.isActive) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const cards = (player.fantasyLand as any).cardsToReceive || 14;
             badges.push({ label: `FL${cards}`, bg: "#444" });
           }
@@ -448,6 +589,53 @@ export default async function HandPage({
           Beta Live — Download Now
         </a>
       </div>
+
+      {/* ── Replay navigation bar ── */}
+      {isReplayAvailable && (
+        <div
+          className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-5 py-3"
+          style={{
+            background: "linear-gradient(to top, #0f1f18, #152b22)",
+            borderTop: "1px solid rgba(255, 215, 0, 0.15)",
+          }}
+        >
+          <button
+            onClick={() => navigateReplay("prev")}
+            className="flex items-center justify-center"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "rgba(255, 215, 0, 0.1)",
+              border: "1px solid rgba(255, 215, 0, 0.3)",
+              color: "#ffd700",
+              fontSize: 18,
+              lineHeight: 1,
+            }}
+          >
+            &#x2039;
+          </button>
+          <span className="font-[family-name:var(--font-dm-mono)] text-sm font-bold text-[var(--color-gold)]">
+            ROUND {replayRound + 1}/{totalSnapshots}
+          </span>
+          <button
+            onClick={() => navigateReplay("next")}
+            className="flex items-center justify-center"
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "rgba(255, 215, 0, 0.1)",
+              border: "1px solid rgba(255, 215, 0, 0.3)",
+              color: "#ffd700",
+              fontSize: 18,
+              lineHeight: 1,
+            }}
+          >
+            &#x203A;
+          </button>
+        </div>
+      )}
     </main>
   );
 }
