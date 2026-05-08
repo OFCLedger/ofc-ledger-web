@@ -511,54 +511,46 @@ export default function HandPage() {
                           <span style={{ color: "#a3c2b0" }}>
                             vs {pair.opponentName}:
                           </span>
-                          {isFinalRound && (
-                            <>
-                              <span style={{ color: "#ffd700" }}>
-                                {pair.label}
-                              </span>
-                              <span
-                                style={{
-                                  color:
-                                    pair.h2h > 0
-                                      ? "#4caf50"
-                                      : pair.h2h < 0
-                                        ? "#ef5350"
-                                        : "#a3c2b0",
-                                }}
-                              >
-                                {fmtScore(pair.h2h)}
-                              </span>
-                            </>
-                          )}
+                          <span style={{ color: "#ffd700" }}>
+                            {pair.label}
+                          </span>
+                          <span
+                            style={{
+                              color:
+                                pair.h2h > 0
+                                  ? "#4caf50"
+                                  : pair.h2h < 0
+                                    ? "#ef5350"
+                                    : "#a3c2b0",
+                            }}
+                          >
+                            {fmtScore(pair.h2h)}
+                          </span>
                         </div>
                       ))}
                       {/* Royalties line */}
                       <div className="flex items-center gap-1.5">
                         <span style={{ color: "#ffd700" }}>{"\u{1F451}"}</span>
-                        {isFinalRound && (
-                          <>
-                            <span
-                              style={{
-                                color:
-                                  netRoy > 0
-                                    ? "#4caf50"
-                                    : netRoy < 0
-                                      ? "#ef5350"
-                                      : "#a3c2b0",
-                              }}
-                            >
-                              {fmtScore(netRoy)}
-                            </span>
-                            <span
-                              style={{
-                                color: "#ffd700",
-                                opacity: isFoul ? 0.5 : 1,
-                              }}
-                            >
-                              ({bruttoRoyalties}p)
-                            </span>
-                          </>
-                        )}
+                        <span
+                          style={{
+                            color:
+                              netRoy > 0
+                                ? "#4caf50"
+                                : netRoy < 0
+                                  ? "#ef5350"
+                                  : "#a3c2b0",
+                          }}
+                        >
+                          {fmtScore(netRoy)}
+                        </span>
+                        <span
+                          style={{
+                            color: "#ffd700",
+                            opacity: isFoul && isFinalRound ? 0.5 : 1,
+                          }}
+                        >
+                          ({bruttoRoyalties}p)
+                        </span>
                       </div>
                     </div>
                   )}
@@ -566,10 +558,7 @@ export default function HandPage() {
                 {/* Score — always present, invisible on intermediate rounds */}
                 <div
                   className="font-[family-name:var(--font-anton)] text-[32px] leading-none"
-                  style={{
-                    color: scoreColor,
-                    visibility: isFinalRound ? "visible" : "hidden",
-                  }}
+                  style={{ color: scoreColor }}
                 >
                   {score > 0 ? `+${score}` : score}
                 </div>
