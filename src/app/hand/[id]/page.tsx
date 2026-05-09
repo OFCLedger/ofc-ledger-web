@@ -346,6 +346,9 @@ export default function HandPage() {
     if (!snapshot) return originalPlayers;
 
     return originalPlayers.map((original) => {
+      // FL players place all cards at once — always show final board
+      if (original.fantasyLand?.isActive) return original;
+
       const snapshotPlayer = snapshot.players.find(
         (sp) => sp.id === original.player
       );
