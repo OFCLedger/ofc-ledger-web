@@ -98,7 +98,7 @@ export default async function Home() {
           }}
         >
           <a
-            href="https://github.com/OFCLedger/releases/releases/download/v.1.1.0-beta/ofc-ledger-beta-1.1.0.apk"
+            href="https://github.com/OFCLedger/releases/releases/download/v1.1.1-beta/ofc-ledger-beta-1.1.1.apk"
             download
             className="btn-primary"
           >
