@@ -145,6 +145,11 @@ export default function TermsPage() {
         liable for any indirect, incidental, consequential damages, loss of
         profits or loss of data arising from your use of the App.
       </p>
+      <p>
+        During the beta period, the App may undergo significant changes.
+        Features may be added, modified or removed without notice. We do not
+        guarantee the preservation of data or game history during this period.
+      </p>
 
       <h2>9. Changes to the Terms</h2>
       <p>
