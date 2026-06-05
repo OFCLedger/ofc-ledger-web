@@ -58,7 +58,7 @@ export default function TermsPage() {
       <h2>4. Subscription and Payment</h2>
       <h3>4.1 Free Trial</h3>
       <p>
-        New users receive a free trial period of three (3) days from the date of
+        New users receive a free trial period of seven (7) days from the date of
         registration. During the trial period, the full functionality of the App
         is available at no cost.
       </p>

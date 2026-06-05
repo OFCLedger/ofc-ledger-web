@@ -13,8 +13,8 @@ export default function PrivacyPage() {
       </p>
 
       <p>
-        OFC Ledger is currently available as an Android beta. This policy
-        explains what data we collect, why, and how you can control it.
+        This policy explains what data we collect, why, and how you can
+        control it.
       </p>
 
       <h2>What We Collect</h2>
@@ -74,7 +74,8 @@ export default function PrivacyPage() {
       <p>OFC Ledger uses the following services to operate:</p>
       <ul>
         <li>Supabase — database and authentication (EU region, Frankfurt)</li>
-        <li>Expo / Google Firebase — push notifications (Android)</li>
+        <li>Expo / Apple (APNs) / Google Firebase — push notifications</li>
+        <li>Sentry — crash reporting and performance monitoring</li>
         <li>Google Gemini — AI-powered card reading (images are not stored)</li>
       </ul>
 
