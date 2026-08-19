@@ -4,7 +4,7 @@ import RulesNav from "@/components/RulesNav";
 export const metadata: Metadata = {
   title: "OFC Rules — Open Face Chinese Poker Guide | OFC Ledger",
   description:
-    "Complete rules for Open Face Chinese Poker (OFC) — Pineapple variant, scoring, royalties, Fantasy Land, and the special rules in OFC Ledger including Spades Multiplier and The Choice.",
+    "Complete rules for Open Face Chinese Poker (OFC) — Pineapple variant, scoring, royalties, Fantasy Land, and the special rules in OFC Ledger including Spades Multiplier, The Choice, and Double Decker mode.",
 };
 
 export default function RulesPage() {
@@ -25,9 +25,11 @@ export default function RulesPage() {
             <h1>Open Face Chinese Poker — Complete Rules Guide</h1>
             <h2>What is Open Face Chinese Poker?</h2>
             <p>
-              Open Face Chinese Poker (OFC) is a card game for 2–4 players where each player
-              builds three separate poker hands on a board — a <strong>top hand</strong> (3 cards),
+              Open Face Chinese Poker (OFC) is a card game for two or more players where each
+              player builds three separate poker hands on a board — a <strong>top hand</strong> (3 cards),
               a <strong>middle hand</strong> (5 cards), and a <strong>bottom hand</strong> (5 cards).
+              The maximum number of players depends on the variant and deck size — see{" "}
+              <strong>App Settings</strong> below.
             </p>
             <p>
               The core rule: your hands must be set in valid order. Bottom must be stronger than
@@ -63,6 +65,14 @@ export default function RulesPage() {
             <p>
               In Classic OFC each player receives 1 card per turn — Pineapple gives you more cards and
               more decisions per turn, making it faster and more strategic.
+            </p>
+            <p>
+              <strong>Player limit:</strong> In standard single-deck play, Pineapple supports a
+              maximum of <strong>3 players</strong> — a single 52-card deck doesn&apos;t have
+              enough cards to deal 4 players their full 13-card boards plus discards. Classic OFC,
+              which has no discards, supports up to <strong>4 players</strong> on a single deck.
+              Enable <strong>Double Decker</strong> mode (Online only) to raise these limits — see
+              the Special Rules section below.
             </p>
             <p>
               <strong>Turn order:</strong> Players take turns in order. The player who places last in
@@ -262,8 +272,13 @@ export default function RulesPage() {
               <li><strong>2♠ + 3♠ + 4♠:</strong> ×8</li>
             </ul>
             <p>
-              The multiplier applies to the full net result including royalties. If two players
-              both hold spades multipliers, the higher multiplier applies — they do not stack.
+              The multiplier applies to the full net result including royalties. In standard
+              single-deck play only one ♠2 (and one ♠3, one ♠4) exists, so only one player can
+              ever hold a spades multiplier in a given hand. In <strong>Double Decker</strong>{" "}
+              mode, however, two of each spade exist, so two players can each hold a spades
+              multiplier in the same hand. When that happens, the two multipliers are
+              multiplied together for the matchup between those two players (m1 × m2) — up to{" "}
+              <strong>×64</strong> (8 × 8) if both players hold the full 2♠+3♠+4♠ bonus.
             </p>
 
             <h3>The Choice</h3>
@@ -299,6 +314,20 @@ export default function RulesPage() {
               Foul as normal if your board is invalid. Whether Shooting the Moon is valid from
               Fantasy Land is configurable in game settings.
             </p>
+
+            <h3>Double Decker</h3>
+            <p>
+              Double Decker plays with two full decks — <strong>104 cards</strong> total, plus
+              jokers if enabled — instead of one. It&apos;s only available in{" "}
+              <strong>Online</strong> games; it is not supported on <strong>Live Table</strong>.
+            </p>
+            <p>
+              Double Decker raises the maximum number of players: up to{" "}
+              <strong>6 in Pineapple</strong> and up to <strong>8 in Classic</strong>. Because two
+              of each card exist, it&apos;s also possible for two players to hold a Spades
+              Multiplier in the same hand — see the Spades Multiplier section above for how those
+              multipliers combine.
+            </p>
           </section>
 
           {/* ───── App Settings ───── */}
@@ -316,7 +345,8 @@ export default function RulesPage() {
               <li><strong>Jokers:</strong> 0–3.</li>
               <li><strong>Turn timer:</strong> 5 minutes to 24 hours, or unlimited.</li>
               <li><strong>Match length:</strong> Optional. Set a fixed number of hands — for example challenge a friend to a 10-hand match — or leave open-ended.</li>
-              <li><strong>Players:</strong> 2–4.</li>
+              <li><strong>Players:</strong> 2–3 in Pineapple, 2–4 in Classic (single deck). With Double Decker (Online only): up to 6 in Pineapple, up to 8 in Classic.</li>
+              <li><strong>Double Decker:</strong> On or Off. Online mode only — not available on Live Table. Uses 104 cards and raises the max player count.</li>
             </ul>
           </section>
 
@@ -332,6 +362,7 @@ export default function RulesPage() {
               <li><strong>Spades Multiplier</strong> — Multiplies your net score when you hold 2♠ and optionally 3♠ and 4♠.</li>
               <li><strong>Pineapple</strong> — OFC variant where you receive 3 cards per turn and discard 1.</li>
               <li><strong>Dead card</strong> — The discarded card in Pineapple, played face-down and not revealed.</li>
+              <li><strong>Double Decker</strong> — Online-only mode using two decks (104 cards), raising the max players to 6 in Pineapple or 8 in Classic.</li>
             </ul>
           </section>
         </main>

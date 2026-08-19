@@ -9,7 +9,7 @@ export default function PrivacyPage() {
     <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-16 prose-ofc">
       <h1>Privacy Policy</h1>
       <p className="text-sm text-[var(--color-muted)]/60">
-        Last updated: 2026-03-12
+        Last updated: 2026-08-19
       </p>
 
       <p>
@@ -43,20 +43,20 @@ export default function PrivacyPage() {
       <p>
         We keep your data for as long as your account is active. If you
         delete your account, your profile and authentication data are
-        permanently deleted. Game history from completed matches —
-        including your username as it appeared in those games — may be
-        retained to preserve the integrity of other players&apos; records
-        and statistics. Your username in this context is a pseudonym with
-        no remaining link to your personal identity once your account is
-        deleted.
+        permanently deleted. Game history from completed matches is
+        anonymized, not retained under your name — your username is
+        replaced with &quot;Deleted User&quot; in other players&apos; ledger
+        entries and shared hands, so no identifying trace of you remains
+        in their match history.
       </p>
 
       <h2>Your Rights</h2>
       <p>
         You have the right to access, correct, or delete your personal data
-        at any time. To delete your account and all associated data, go to
-        Preferences in the app and tap &quot;Delete account&quot;. This is
-        immediate and cannot be undone.
+        at any time. To export a copy of your data, go to Preferences in the
+        app and tap &quot;Export My Data&quot;. To delete your account and
+        all associated data, go to Preferences in the app and tap
+        &quot;Delete account&quot;. This is immediate and cannot be undone.
       </p>
       <p>
         For any other requests, contact us at{" "}
@@ -77,6 +77,10 @@ export default function PrivacyPage() {
         <li>Expo / Apple (APNs) / Google Firebase — push notifications</li>
         <li>Sentry — crash reporting and performance monitoring</li>
         <li>Google Gemini — AI-powered card reading (images are not stored)</li>
+        <li>
+          RevenueCat — subscription management (your user ID is shared to
+          sync subscription status with your account)
+        </li>
       </ul>
 
       <h2>Contact</h2>

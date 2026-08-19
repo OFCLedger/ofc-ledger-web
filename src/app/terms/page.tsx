@@ -9,7 +9,7 @@ export default function TermsPage() {
     <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-16 prose-ofc">
       <h1>Terms of Service</h1>
       <p className="text-sm text-[var(--color-muted)]/60">
-        OFC Ledger &nbsp;|&nbsp; Last updated: March 12, 2026
+        OFC Ledger &nbsp;|&nbsp; Last updated: August 19, 2026
       </p>
 
       <h2>1. General</h2>
@@ -64,10 +64,9 @@ export default function TermsPage() {
       </p>
       <h3>4.2 Subscription Price</h3>
       <p>
-        After the trial period ends, the App costs USD 2.99 per month (&quot;the
-        Subscription&quot;). The App is currently in beta and payment
-        functionality is not yet active. Distribution and payment details
-        will be updated when the App launches publicly.
+        After the trial period ends, the App costs USD 1.99 per month (&quot;the
+        Subscription&quot;). Payment is processed through the Apple App Store
+        or Google Play Store, depending on your device.
       </p>
       <h3>4.3 Renewal and Cancellation</h3>
       <ul>
