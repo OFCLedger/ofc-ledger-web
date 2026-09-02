@@ -594,7 +594,7 @@ export default function HandPage() {
           OFC LEDGER
         </span>
         <span className="mt-0.5 text-[11px] italic text-[var(--color-muted)]">
-          For grinders and gamblers.
+          Track every point. Ride every swing.
         </span>
         <a
           href="/"

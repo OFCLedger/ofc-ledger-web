@@ -336,7 +336,7 @@ export default function Home() {
           OFC LEDGER
         </h1>
         <p className="mt-3 text-lg text-[var(--color-muted)] sm:mt-4 sm:text-xl">
-          For grinders and gamblers.
+          Track every point. Ride every swing.
         </p>
         <button disabled className="btn-gold mt-8 sm:mt-10">
           Coming Soon
@@ -1134,7 +1134,7 @@ export default async function HandPage({
           OFC LEDGER
         </span>
         <span className="mt-0.5 text-[11px] italic text-[var(--color-muted)]">
-          For grinders and gamblers.
+          Track every point. Ride every swing.
         </span>
         <span
           className="mt-4 text-[12px] uppercase"

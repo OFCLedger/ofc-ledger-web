@@ -61,7 +61,7 @@ export default function RootLayout({
             fontSize: "0.8rem",
           }}
         >
-          © 2026 OFC Ledger · For grinders and gamblers. ·{" "}
+          © 2026 OFC Ledger · Track every point. Ride every swing. ·{" "}
           <Link href="/privacy" className="underline hover:text-[var(--color-gold)] transition-colors">Privacy</Link> ·{" "}
           <Link href="/terms" className="underline hover:text-[var(--color-gold)] transition-colors">Terms</Link>
         </footer>
