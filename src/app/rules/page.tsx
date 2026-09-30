@@ -298,9 +298,9 @@ export default function RulesPage() {
 
             <h3>Jokers</h3>
             <p>
-              1–3 jokers can be added to the deck. When you place a joker on your board you
+              1–6 jokers can be added to the deck. When you place a joker on your board you
               declare which card it represents. Once confirmed the value is locked for that hand.
-              If time runs out jokers are auto-defined as 2♥, 3♥, or 4♥.
+              If time runs out jokers are auto-defined as 2♥ through 7♥.
             </p>
 
             <h3>Shooting the Moon</h3>
@@ -342,7 +342,7 @@ export default function RulesPage() {
               <li><strong>Fantasy Land mode:</strong> Classic (QQ+), Progressive (QQ=14, KK=15, AA=16, trips=17), or Custom.</li>
               <li><strong>Spades Multiplier:</strong> On or Off.</li>
               <li><strong>The Choice:</strong> On or Off.</li>
-              <li><strong>Jokers:</strong> 0–3.</li>
+              <li><strong>Jokers:</strong> 0–6.</li>
               <li><strong>Turn timer:</strong> 5 minutes to 24 hours, or unlimited.</li>
               <li><strong>Match length:</strong> Optional. Set a fixed number of hands — for example challenge a friend to a 10-hand match — or leave open-ended.</li>
               <li><strong>Players:</strong> 2–3 in Pineapple, 2–4 in Classic (single deck). With Double Decker (Online only): up to 6 in Pineapple, up to 8 in Classic.</li>

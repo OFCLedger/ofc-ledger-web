@@ -1,7 +1,4 @@
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
-
-export const revalidate = 60;
 
 const screenshots = [
   { src: "/screenshot1.png", label: "Live play" },
@@ -33,16 +30,7 @@ const features = [
   },
 ];
 
-const BETA_OFFSET = 65;
-const BETA_CAP = 200;
-
-export default async function Home() {
-  const { count } = await supabase
-    .from("profiles")
-    .select("*", { count: "exact", head: true });
-  const total = (count ?? 0) + BETA_OFFSET;
-  const pct = Math.min(100, (total / BETA_CAP) * 100);
-
+export default function Home() {
   return (
     <main>
       {/* ── HERO ── */}
@@ -85,7 +73,7 @@ export default async function Home() {
             fontSize: "0.75rem",
           }}
         >
-          OPEN BETA — NOW LIVE
+          Live on Google Play. iOS beta via TestFlight.
         </span>
         <div
           className="mt-4"
@@ -98,8 +86,9 @@ export default async function Home() {
           }}
         >
           <a
-            href="https://github.com/OFCLedger/releases/releases/download/v1.1.9-beta/application-fef22d78-ee62-474d-b50f-d8931d4d463c.apk"
-            download
+            href="https://play.google.com/store/apps/details?id=com.ofcledger.OFCScorekeeper"
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-primary"
           >
             Download for Android
@@ -120,33 +109,6 @@ export default async function Home() {
               Requires TestFlight
             </span>
           </div>
-        </div>
-        {/* ── BETA COUNTER ── */}
-        <div className="mt-6 flex flex-col items-center gap-2">
-          <div
-            style={{
-              width: 220,
-              height: 6,
-              borderRadius: 3,
-              background: "rgba(255,255,255,0.08)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                width: `${pct}%`,
-                height: "100%",
-                borderRadius: 3,
-                background: "var(--color-gold)",
-              }}
-            />
-          </div>
-          <span
-            className="text-sm font-[family-name:var(--font-dm-sans)]"
-            style={{ color: "var(--color-gold)" }}
-          >
-            {total}/200 beta spots claimed – first come first served.
-          </span>
         </div>
       </section>
 

@@ -33,7 +33,7 @@ const faqs = [
   },
   {
     q: "What happens if I don't place my cards in time?",
-    a: "They're placed automatically, top-left to bottom-right. Jokers are set as 2, 3, or 4 of hearts.",
+    a: "They're placed automatically, top-left to bottom-right. Jokers are set as 2 through 7 of hearts.",
   },
   {
     q: "Will I get push notifications when it's my turn?",
@@ -41,11 +41,11 @@ const faqs = [
   },
   {
     q: "When does the app launch and on which phones?",
-    a: "An open Android beta is live now. Full releases for Android and iOS are coming.",
+    a: "Android is live now on Google Play. iOS is currently in TestFlight beta.",
   },
   {
     q: "What does it cost?",
-    a: "A free 3-day trial, then $2.99/month. That covers servers, infrastructure, and development. No battle pass. No coins.",
+    a: "A free 7-day trial, then $1.99/month, or $17.99/year. That covers servers, infrastructure, and development. No battle pass. No coins.",
   },
   {
     q: "What if the app scores something wrong?",
