@@ -24,8 +24,8 @@ const faqs = [
     a: "No — OFC Ledger is built for private groups. Invite your players via link or QR code.",
   },
   {
-    q: "Does the app handle real money?",
-    a: "No. The app tracks points. What you play for is up to you.",
+    q: "Do I need to pay to play with my crew?",
+    a: "No. OFC Ledger only tracks points. What you and your crew do with them is up to you.",
   },
   {
     q: "How do I activate squeeze?",
@@ -87,7 +87,7 @@ export default function FAQPage() {
         <p
           className="mx-auto mt-5 font-[family-name:var(--font-dm-sans)]"
           style={{
-            color: "var(--color-muted)",
+            color: "var(--color-body)",
             maxWidth: 520,
             lineHeight: 1.7,
           }}
@@ -109,7 +109,7 @@ export default function FAQPage() {
               </h3>
               <p
                 style={{
-                  color: "var(--color-muted)",
+                  color: "var(--color-body)",
                   fontSize: "0.9rem",
                   lineHeight: 1.7,
                   marginTop: 8,
@@ -145,7 +145,7 @@ export default function FAQPage() {
         </h2>
         <p
           className="mt-4"
-          style={{ color: "var(--color-muted)", lineHeight: 1.8 }}
+          style={{ color: "var(--color-body)", lineHeight: 1.8 }}
         >
           Can&apos;t find what you&apos;re looking for? Drop us a line.
         </p>

@@ -1,74 +1,55 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import LogoHero from "./LogoHero";
+import LogoMark from "./LogoMark";
 
 const links = [
-  { href: "/", label: "Home" },
-  { href: "/rules", label: "Rules" },
-  { href: "/faq", label: "FAQ →" },
+  { href: "/rules", label: "House rules" },
+  { href: "/#ledger", label: "Ledger" },
+  { href: "/faq", label: "FAQ" },
 ];
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
-
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-md bg-[var(--color-bg)]/80 border-b border-[var(--color-card-border)]">
-      <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 sm:gap-3">
-          <LogoHero size={28} />
-          <span className="font-[family-name:var(--font-anton)] text-base font-bold tracking-wider text-[var(--color-white)] sm:text-lg">
-            OFC LEDGER
+    <header
+      style={{ background: "var(--color-bg)", borderBottom: "1px solid var(--color-card-border)" }}
+    >
+      <nav className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 px-4 py-[18px] sm:px-6">
+        <Link href="/" className="flex items-center gap-3 no-underline">
+          <LogoMark width={34} height={31} />
+          <span
+            className="font-[family-name:var(--font-anton)]"
+            style={{ fontSize: 24, letterSpacing: "0.02em", color: "var(--color-white)" }}
+          >
+            <span style={{ color: "var(--color-gold)" }}>OFC</span> LEDGER
           </span>
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden items-center gap-6 text-sm sm:flex">
+        <div className="flex flex-wrap items-center gap-7">
           {links.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="transition-colors hover:text-[var(--color-gold)]"
+              className="no-underline"
+              style={{ color: "var(--color-body)", fontSize: 15, fontWeight: 500 }}
             >
               {l.label}
             </Link>
           ))}
+          <Link
+            href="/#get"
+            className="no-underline"
+            style={{
+              background: "var(--color-gold)",
+              color: "var(--color-gold-ink)",
+              fontWeight: 700,
+              fontSize: 15,
+              padding: "12px 20px",
+              borderRadius: 999,
+            }}
+          >
+            Get the app
+          </Link>
         </div>
-
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="flex flex-col gap-1.5 sm:hidden"
-          aria-label="Toggle menu"
-        >
-          <span
-            className={`block h-0.5 w-5 bg-[var(--color-gold)] transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
-          />
-          <span
-            className={`block h-0.5 w-5 bg-[var(--color-gold)] transition-opacity ${open ? "opacity-0" : ""}`}
-          />
-          <span
-            className={`block h-0.5 w-5 bg-[var(--color-gold)] transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
-          />
-        </button>
       </nav>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="border-t border-[var(--color-card-border)] px-4 pb-4 sm:hidden">
-          {links.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              onClick={() => setOpen(false)}
-              className="block py-3 text-sm transition-colors hover:text-[var(--color-gold)]"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-      )}
     </header>
   );
 }

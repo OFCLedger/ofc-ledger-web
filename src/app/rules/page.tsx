@@ -286,8 +286,7 @@ export default function RulesPage() {
               If you play the 2 of Spades and are not currently in Fantasy Land, you earn
               <strong> The Choice</strong> for your next hand. With The Choice active you may
               place either 1 or 3 cards instead of the normal 2 on a turn — but your total
-              placements must balance to an even number over the round. You carry a debt that
-              must be settled within the same hand.
+              placements must balance to an even number over the round.
             </p>
             <p>
               The Choice badge (TC) appears in the results screen when active.
@@ -355,7 +354,7 @@ export default function RulesPage() {
             <h2>Glossary</h2>
             <ul>
               <li><strong>Foul</strong> — An invalid board where hand strength order is broken. Loses 6 points per opponent, no royalties earned.</li>
-              <li><strong>Scoop</strong> — Winning all three rows against one opponent. Worth 3 points total including a 2-point scoop bonus.</li>
+              <li><strong>Scoop</strong> — Winning all three rows against one opponent. Worth 6 points total: 3 row points plus a 3-point scoop bonus.</li>
               <li><strong>Fantasy Land (FL)</strong> — Receiving all cards at once next hand after qualifying on the top row.</li>
               <li><strong>Royalties</strong> — Bonus points for strong hands, added after head-to-head row scoring.</li>
               <li><strong>The Choice (TC)</strong> — Earned by playing 2♠. Allows placing 1 or 3 cards on a turn instead of the normal 2.</li>

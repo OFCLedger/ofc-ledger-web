@@ -51,7 +51,7 @@ export default function RulesNav({ variant }: { variant: "mobile" | "desktop" })
 
   if (variant === "mobile") {
     return (
-      <nav className="sticky top-[53px] z-40 overflow-x-auto border-b border-[var(--color-card-border)] bg-[var(--color-bg)]/95 backdrop-blur-sm px-4 py-2 lg:hidden">
+      <nav className="sticky top-0 z-40 overflow-x-auto border-b border-[var(--color-card-border)] bg-[var(--color-bg)]/95 backdrop-blur-sm px-4 py-2 lg:hidden">
         <div className="flex gap-3 whitespace-nowrap">
           {sections.map((s) => (
             <button

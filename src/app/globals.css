@@ -1,46 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --color-bg: #152b22;
-  --color-bg-mid: #1a3329;
+  --color-bg: #0f1f18;
+  --color-bg-alt: #152b22;
   --color-bg-light: #1e3d2f;
   --color-gold: #ffd700;
-  --color-gold-dim: #bfa230;
-  --color-gold-subtle: rgba(255, 215, 0, 0.08);
+  --color-gold-ink: #0f1f18;
   --color-muted: #a3c2b0;
-  --color-white: #f0f4f2;
-  --color-card: #172e25;
-  --color-card-border: #263f32;
+  --color-body: #c3d2c8;
+  --color-white: #f4efe1;
+  --color-card-border: #1f3a2e;
 }
 
 @theme inline {
   --color-background: var(--color-bg);
-  --color-foreground: var(--color-muted);
-  --font-display: var(--font-playfair);
+  --color-foreground: var(--color-body);
+  --font-display: var(--font-anton);
   --font-body: var(--font-dm-sans);
 }
 
 html {
-  background: #1e3d2f;
+  background: var(--color-bg);
   scroll-behavior: smooth;
 }
 
 body {
-  background: radial-gradient(ellipse at 50% 0%, #1e3d2f 0%, #152b22 60%, #0f1f18 100%);
-  background-attachment: fixed;
-  color: var(--color-muted);
-  font-family: var(--font-body), system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-body);
+  font-family: var(--font-body), sans-serif;
   min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-anton), sans-serif;
   color: var(--color-white);
 }
 
 /* Card component */
 .card {
-  background: linear-gradient(135deg, #1a3329 0%, #172e25 100%);
+  background: var(--color-bg-alt);
   border: 1px solid var(--color-card-border);
   border-radius: 1rem;
   padding: 1.25rem;

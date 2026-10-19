@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Playfair_Display, DM_Sans, DM_Mono, Anton } from "next/font/google";
+import { DM_Sans, DM_Mono, Anton } from "next/font/google";
 import Link from "next/link";
 import Header from "@/components/Header";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -33,7 +27,7 @@ const anton = Anton({
 
 export const metadata: Metadata = {
   title: "OFC Ledger",
-  description: "Score, track, and settle your Open-Face Chinese Poker sessions.",
+  description: "Score and track your Open-Face Chinese Poker sessions with your crew.",
   icons: {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -48,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable} ${anton.variable} antialiased`}
+        className={`${dmSans.variable} ${dmMono.variable} ${anton.variable} antialiased`}
       >
         <Header />
         {children}
