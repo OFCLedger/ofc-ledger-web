@@ -10,6 +10,22 @@
   --color-body: #c3d2c8;
   --color-white: #f4efe1;
   --color-card-border: #1f3a2e;
+
+  --hero-pad-top: clamp(48px, 7vw, 104px);
+  --hero-pad-bottom: clamp(56px, 7vw, 112px);
+  --hero-copy-gap: 28px;
+  --hero-row-gap: 56px;
+  --hero-h1-size: clamp(96px, 11vw, 176px);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --hero-pad-top: 20px;
+    --hero-pad-bottom: 28px;
+    --hero-copy-gap: 14px;
+    --hero-row-gap: 20px;
+    --hero-h1-size: clamp(60px, 17vw, 88px);
+  }
 }
 
 @theme inline {
@@ -17,6 +33,7 @@
   --color-foreground: var(--color-body);
   --font-display: var(--font-anton);
   --font-body: var(--font-dm-sans);
+  --font-sans: var(--font-dm-sans);
 }
 
 html {
@@ -27,7 +44,7 @@ html {
 body {
   background: var(--color-bg);
   color: var(--color-body);
-  font-family: var(--font-body), sans-serif;
+  font-family: var(--font-sans), sans-serif;
   min-height: 100vh;
 }
 
@@ -131,3 +148,135 @@ h1, h2, h3, h4, h5, h6 {
 .prose-ofc th { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 2px solid var(--color-card-border); color: var(--color-gold); font-weight: 600; font-size: 0.875rem; }
 .prose-ofc td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--color-card-border); font-size: 0.875rem; }
 .prose-ofc tr:hover { background: var(--color-bg-light); }
+
+/* ── Depth: hero/ledger backdrop + phone glow ── */
+.section-depth {
+  background: radial-gradient(circle at 50% 45%, #1e3d2f 0%, #152b22 45%, #0f1f18 80%);
+}
+
+.phone-wrap {
+  position: relative;
+}
+
+.phone-glow {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 72%;
+  max-width: 420px;
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 215, 0, 0.16);
+  filter: blur(70px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.phone-frame {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Rule cards: hover lift ── */
+.rule-card {
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+.rule-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 1px rgba(255, 215, 0, 0.5), 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+/*
+ * ── One-shot scroll reveals ──
+ * Default state (no JS, crawlers, reduced motion) is the fully visible,
+ * final state. `RevealReady` adds `.reveal-ready` to <html> after hydration
+ * (skipped entirely under prefers-reduced-motion), which arms the hidden
+ * start-state below; each element's own IntersectionObserver then adds
+ * `.in-view` once, playing the transition exactly one time.
+ */
+.reveal-slam,
+.reveal-fade-up,
+.reveal-wipe,
+.reveal-wipe-text {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-wipe {
+  clip-path: inset(0 0 0 0);
+}
+
+.reveal-slam {
+  display: inline-block;
+}
+
+.reveal-glow {
+  text-shadow: 0 0 28px rgba(255, 215, 0, 0.7), 0 0 8px rgba(255, 215, 0, 0.9);
+}
+
+html.reveal-ready .reveal-slam {
+  opacity: 0;
+  transform: scale(1.08);
+}
+
+html.reveal-ready .reveal-slam.in-view {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 180ms ease-out, opacity 180ms ease-out;
+}
+
+html.reveal-ready .reveal-glow {
+  text-shadow: none;
+}
+
+html.reveal-ready .reveal-slam.reveal-glow.in-view {
+  text-shadow: 0 0 28px rgba(255, 215, 0, 0.7), 0 0 8px rgba(255, 215, 0, 0.9);
+  transition: transform 180ms ease-out, opacity 180ms ease-out, text-shadow 600ms ease-out;
+}
+
+html.reveal-ready .reveal-fade-up {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+html.reveal-ready .reveal-fade-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 300ms ease-out, opacity 300ms ease-out;
+}
+
+html.reveal-ready .reveal-wipe {
+  clip-path: inset(0 100% 0 0);
+}
+
+html.reveal-ready .reveal-wipe.in-view {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 200ms ease-out;
+}
+
+html.reveal-ready .reveal-wipe-text {
+  opacity: 0;
+}
+
+html.reveal-ready .reveal-wipe.in-view .reveal-wipe-text {
+  opacity: 1;
+  transition: opacity 160ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-slam,
+  .reveal-fade-up,
+  .reveal-wipe,
+  .reveal-wipe-text {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: inset(0 0 0 0) !important;
+    transition: none !important;
+  }
+
+  .reveal-glow {
+    text-shadow: 0 0 28px rgba(255, 215, 0, 0.7), 0 0 8px rgba(255, 215, 0, 0.9) !important;
+  }
+}

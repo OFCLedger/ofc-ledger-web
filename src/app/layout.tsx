@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Anton } from "next/font/google";
 import Link from "next/link";
 import Header from "@/components/Header";
+import RevealReady from "@/components/RevealReady";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
@@ -40,10 +41,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${dmSans.variable} ${dmMono.variable} ${anton.variable} antialiased`}
-      >
+    <html
+      lang="en"
+      className={`${dmSans.variable} ${dmMono.variable} ${anton.variable}`}
+    >
+      <body className="antialiased">
+        <RevealReady />
         <Header />
         {children}
         <footer

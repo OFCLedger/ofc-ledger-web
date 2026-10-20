@@ -1,5 +1,10 @@
 import Image from "next/image";
 import LogoMark from "@/components/LogoMark";
+import Reveal from "@/components/Reveal";
+import GoldPlate from "@/components/GoldPlate";
+import SpadesMultiplier from "@/components/SpadesMultiplier";
+import ParallaxFrame from "@/components/ParallaxFrame";
+import HeroPhoneVideo from "@/components/HeroPhoneVideo";
 
 const GOOGLE_PLAY_URL =
   "https://play.google.com/store/apps/details?id=com.ofcledger.OFCScorekeeper";
@@ -66,19 +71,27 @@ export default function Home() {
   return (
     <main>
       {/* ── HERO ── */}
-      <section id="top" style={{ background: "var(--color-bg-alt)", overflow: "hidden" }}>
+      <section id="top" className="section-depth" style={{ overflow: "hidden" }}>
         <div
           style={{
             maxWidth: 1200,
             margin: "0 auto",
-            padding: "clamp(48px, 7vw, 104px) 24px clamp(56px, 7vw, 112px)",
+            padding: "var(--hero-pad-top) 24px var(--hero-pad-bottom)",
             display: "flex",
             flexWrap: "wrap",
             alignItems: "center",
-            gap: 56,
+            gap: "var(--hero-row-gap)",
           }}
         >
-          <div style={{ flex: "1 1 520px", minWidth: 0, display: "flex", flexDirection: "column", gap: 28 }}>
+          <div
+            style={{
+              flex: "1 1 520px",
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--hero-copy-gap)",
+            }}
+          >
             <Eyebrow>OPEN FACE CHINESE · FOR YOUR CREW</Eyebrow>
             <h1
               style={{
@@ -89,47 +102,53 @@ export default function Home() {
                 gap: 10,
                 ...anton,
                 fontWeight: 400,
-                fontSize: "clamp(96px, 11vw, 176px)",
+                fontSize: "var(--hero-h1-size)",
                 lineHeight: 0.92,
                 color: "var(--color-white)",
               }}
             >
-              <span>OFC ON</span>
-              <span
+              <Reveal as="span" variant="slam">
+                OFC ON
+              </Reveal>
+              <GoldPlate
+                delayMs={120}
                 style={{
-                  background: "var(--color-gold)",
-                  color: "var(--color-gold-ink)",
                   fontSize: "0.725em",
                   lineHeight: 1.2,
                   padding: "0.03em 0 0",
                   letterSpacing: "-0.005em",
                   textAlign: "center",
                   whiteSpace: "nowrap",
+                  background: "var(--color-gold)",
+                  color: "var(--color-gold-ink)",
                 }}
               >
                 STEROIDS
-              </span>
+              </GoldPlate>
             </h1>
-            <p style={{ margin: 0, maxWidth: "34em", fontSize: 19, lineHeight: 1.55, color: "var(--color-body)" }}>
+            <Reveal as="p" variant="fade-up" style={{ margin: 0, maxWidth: "34em", fontSize: 19, lineHeight: 1.55, color: "var(--color-body)" }}>
               The OFC you know, played with your own crew. Plus twists you won&rsquo;t find
               anywhere else: Spades Multiplier, The Choice, Jokers and Double Decker.
-            </p>
+            </Reveal>
             <div id="get" style={{ display: "flex", flexWrap: "wrap", gap: 14, alignItems: "center" }}>
               <StoreButtons />
             </div>
           </div>
 
           <div
+            className="phone-wrap"
             style={{
               flex: "1 1 380px",
               minWidth: 0,
               display: "flex",
               justifyContent: "center",
-              position: "relative",
               padding: "24px 0 40px",
             }}
           >
-            <div
+            <div className="phone-glow" aria-hidden="true" />
+            <ParallaxFrame
+              baseRotateDeg={-4}
+              className="phone-frame"
               style={{
                 width: "min(340px, 82vw)",
                 aspectRatio: "1440 / 3168",
@@ -138,23 +157,19 @@ export default function Home() {
                 borderRadius: 46,
                 padding: 10,
                 boxSizing: "border-box",
-                transform: "rotate(-4deg)",
                 boxShadow: "0 40px 90px rgba(0,0,0,0.55)",
               }}
             >
-              <Image
-                src="/home/spades.jpg"
-                alt="OFC Ledger board with the bonus at x8"
-                width={720}
-                height={1584}
+              <HeroPhoneVideo
                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 36, display: "block" }}
               />
-            </div>
+            </ParallaxFrame>
             <div
               style={{
                 position: "absolute",
-                left: "max(0px, calc(50% - 300px))",
-                top: "26%",
+                zIndex: 2,
+                left: "calc(50% - 470px)",
+                top: "14%",
                 width: "min(380px, 70vw)",
                 borderRadius: 18,
                 overflow: "hidden",
@@ -203,37 +218,30 @@ export default function Home() {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 16, maxWidth: 760 }}>
             <Eyebrow>ONLY IN OFC LEDGER</Eyebrow>
-            <h2
-              style={{
-                margin: 0,
-                ...anton,
-                fontWeight: 400,
-                fontSize: "clamp(56px, 7vw, 104px)",
-                lineHeight: 0.95,
-                color: "var(--color-white)",
-              }}
+            <Reveal
+              as="h2"
+              variant="slam"
+              style={{ margin: 0, fontWeight: 400, fontSize: "clamp(56px, 7vw, 104px)", lineHeight: 0.95, color: "var(--color-white)" }}
             >
               HOUSE RULES, BUILT IN.
-            </h2>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6 }}>
+            </Reveal>
+            <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 18, lineHeight: 1.6 }}>
               Classic or Pineapple, progressive Fantasy Land, adjustable timers. And then the
               rules that started at our own table.
-            </p>
+            </Reveal>
           </div>
 
           {/* Spades Multiplier */}
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 56 }}>
             <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", flexDirection: "column", gap: 18 }}>
-              <p style={{ margin: 0, ...anton, fontSize: 96, lineHeight: 1, color: "var(--color-gold)" }}>
-                x2 x4 x8
-              </p>
-              <h3 style={{ margin: 0, ...anton, fontWeight: 400, fontSize: 48, color: "var(--color-white)" }}>
+              <SpadesMultiplier />
+              <Reveal as="h3" variant="slam" style={{ margin: 0, fontWeight: 400, fontSize: 48, color: "var(--color-white)" }}>
                 SPADES MULTIPLIER
-              </h3>
-              <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "30em" }}>
+              </Reveal>
+              <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "30em" }}>
                 Play the 2♠ and your whole hand counts double, royalties included. Add the 3♠
                 for x4. Add the 4♠ for x8. One hand can flip a whole session.
-              </p>
+              </Reveal>
             </div>
             <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", justifyContent: "center" }}>
               <Image
@@ -257,7 +265,7 @@ export default function Home() {
             <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", justifyContent: "center", gap: 20 }}>
               <Image
                 src="/home/joker-picker.jpg"
-                alt="Select Card for Joker picker"
+                alt="Select Card for Joker picker, 6 of clubs selected"
                 width={720}
                 height={1584}
                 style={{
@@ -285,19 +293,20 @@ export default function Home() {
               />
             </div>
             <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", flexDirection: "column", gap: 18 }}>
-              <h3 style={{ margin: 0, ...anton, fontWeight: 400, fontSize: 48, color: "var(--color-white)" }}>
+              <Reveal as="h3" variant="slam" style={{ margin: 0, fontWeight: 400, fontSize: 48, color: "var(--color-white)" }}>
                 JOKERS
-              </h3>
-              <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "30em" }}>
+              </Reveal>
+              <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "30em" }}>
                 A wild card that becomes exactly the card you need. Pick it, place it, finish
                 the straight flush.
-              </p>
+              </Reveal>
             </div>
           </div>
 
           {/* 3-up cards */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 24 }}>
             <div
+              className="rule-card"
               style={{
                 flex: "1 1 300px",
                 minWidth: 0,
@@ -309,16 +318,19 @@ export default function Home() {
                 gap: 14,
               }}
             >
-              <p style={{ margin: 0, ...anton, fontSize: 64, lineHeight: 1, color: "var(--color-gold)" }}>1 OR 3</p>
-              <h3 style={{ margin: 0, ...anton, fontWeight: 400, fontSize: 40, color: "var(--color-white)" }}>
+              <Reveal as="p" variant="slam" style={{ margin: 0, ...anton, fontSize: 64, lineHeight: 1, color: "var(--color-gold)" }}>
+                1 OR 3
+              </Reveal>
+              <Reveal as="h3" variant="slam" style={{ margin: 0, fontWeight: 400, fontSize: 40, color: "var(--color-white)" }}>
                 THE CHOICE
-              </h3>
-              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
+              </Reveal>
+              <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
                 Play the 2♠ and you earn The Choice. Next hand, place 1 or 3 cards on a turn
                 instead of 2. Just balance it out before the hand is done.
-              </p>
+              </Reveal>
             </div>
             <div
+              className="rule-card"
               style={{
                 flex: "1 1 300px",
                 minWidth: 0,
@@ -330,16 +342,19 @@ export default function Home() {
                 gap: 14,
               }}
             >
-              <p style={{ margin: 0, ...anton, fontSize: 64, lineHeight: 1, color: "var(--color-gold)" }}>+20</p>
-              <h3 style={{ margin: 0, ...anton, fontWeight: 400, fontSize: 40, color: "var(--color-white)" }}>
+              <Reveal as="p" variant="slam" style={{ margin: 0, ...anton, fontSize: 64, lineHeight: 1, color: "var(--color-gold)" }}>
+                +20
+              </Reveal>
+              <Reveal as="h3" variant="slam" style={{ margin: 0, fontWeight: 400, fontSize: 40, color: "var(--color-white)" }}>
                 SHOOT THE MOON
-              </h3>
-              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
+              </Reveal>
+              <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
                 Jack-high or worse on the bottom? Skip the rows. Take a fixed score from every
                 opponent. 20 by default, and the spades still multiply it.
-              </p>
+              </Reveal>
             </div>
             <div
+              className="rule-card"
               style={{
                 flex: "1 1 300px",
                 minWidth: 0,
@@ -351,23 +366,23 @@ export default function Home() {
                 gap: 14,
               }}
             >
-              <p style={{ margin: 0, ...anton, fontSize: 64, lineHeight: 1, color: "var(--color-gold)" }}>
+              <Reveal as="p" variant="slam" style={{ margin: 0, ...anton, fontSize: 64, lineHeight: 1, color: "var(--color-gold)" }}>
                 104 CARDS
-              </p>
-              <h3 style={{ margin: 0, ...anton, fontWeight: 400, fontSize: 40, color: "var(--color-white)" }}>
+              </Reveal>
+              <Reveal as="h3" variant="slam" style={{ margin: 0, fontWeight: 400, fontSize: 40, color: "var(--color-white)" }}>
                 DOUBLE DECKER
-              </h3>
-              <p style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
+              </Reveal>
+              <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 17, lineHeight: 1.6 }}>
                 Two full decks. Up to 6 players in Pineapple, 8 in Classic. And two spades
                 multipliers can collide: up to x64.
-              </p>
+              </Reveal>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── LEDGER ── */}
-      <section id="ledger" style={{ background: "var(--color-bg-alt)" }}>
+      <section id="ledger" className="section-depth">
         <div
           style={{
             maxWidth: 1200,
@@ -394,23 +409,25 @@ export default function Home() {
                 color: "var(--color-white)",
               }}
             >
-              <span>TRACK EVERY POINT.</span>
-              <span
+              <Reveal as="span" variant="slam">
+                TRACK EVERY POINT.
+              </Reveal>
+              <GoldPlate
                 style={{
-                  background: "var(--color-gold)",
-                  color: "var(--color-gold-ink)",
                   fontSize: "0.91em",
                   padding: "0.06em 0 0.02em",
                   textAlign: "center",
+                  background: "var(--color-gold)",
+                  color: "var(--color-gold-ink)",
                 }}
               >
                 RIDE EVERY SWING.
-              </span>
+              </GoldPlate>
             </h2>
-            <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "32em" }}>
+            <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "32em" }}>
               Every hand is logged and replayable. Standings, swings and Fantasy Land runs for
               the whole crew, session after session.
-            </p>
+            </Reveal>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 28 }}>
               <div style={{ flex: "1 1 160px", display: "flex", flexDirection: "column", gap: 6 }}>
                 <span style={{ ...anton, fontSize: 22, color: "var(--color-gold)" }}>PLAY ONLINE</span>
@@ -426,8 +443,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div style={{ flex: "1 1 360px", minWidth: 0, display: "flex", justifyContent: "center" }}>
-            <div
+          <div className="phone-wrap" style={{ flex: "1 1 360px", minWidth: 0, display: "flex", justifyContent: "center" }}>
+            <div className="phone-glow" aria-hidden="true" />
+            <ParallaxFrame
+              baseRotateDeg={3}
+              className="phone-frame"
               style={{
                 width: "min(330px, 82vw)",
                 aspectRatio: "1440 / 3168",
@@ -436,7 +456,6 @@ export default function Home() {
                 borderRadius: 46,
                 padding: 10,
                 boxSizing: "border-box",
-                transform: "rotate(3deg)",
                 boxShadow: "0 40px 90px rgba(0,0,0,0.55)",
               }}
             >
@@ -447,7 +466,7 @@ export default function Home() {
                 height={1584}
                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 36, display: "block" }}
               />
-            </div>
+            </ParallaxFrame>
           </div>
         </div>
       </section>
@@ -467,22 +486,17 @@ export default function Home() {
           }}
         >
           <Eyebrow>BUILT BY PLAYERS, FOR PLAYERS</Eyebrow>
-          <h2
-            style={{
-              margin: 0,
-              ...anton,
-              fontWeight: 400,
-              fontSize: "clamp(48px, 6vw, 84px)",
-              lineHeight: 1,
-              color: "var(--color-white)",
-            }}
+          <Reveal
+            as="h2"
+            variant="slam"
+            style={{ margin: 0, fontWeight: 400, fontSize: "clamp(48px, 6vw, 84px)", lineHeight: 1, color: "var(--color-white)" }}
           >
             YOUR HOUSE RULE MIGHT BE NEXT.
-          </h2>
-          <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "36em" }}>
+          </Reveal>
+          <Reveal as="p" variant="fade-up" style={{ margin: 0, fontSize: 18, lineHeight: 1.6, maxWidth: "36em" }}>
             Spades Multiplier and The Choice started as house rules at our own table. Got one
             your crew swears by? Send it in.
-          </p>
+          </Reveal>
           <a
             href="mailto:hello@ofcledger.com"
             style={{
@@ -515,9 +529,9 @@ export default function Home() {
           }}
         >
           <LogoMark width={220} height={196} />
-          <p style={{ margin: 0, ...anton, fontSize: "clamp(64px, 9vw, 128px)", lineHeight: 1, color: "var(--color-white)" }}>
+          <Reveal as="p" variant="slam" style={{ margin: 0, ...anton, fontSize: "clamp(64px, 9vw, 128px)", lineHeight: 1, color: "var(--color-white)" }}>
             <span style={{ color: "var(--color-gold)" }}>OFC</span> LEDGER
-          </p>
+          </Reveal>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 14 }}>
             <StoreButtons />
           </div>
