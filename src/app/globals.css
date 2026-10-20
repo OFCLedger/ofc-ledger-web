@@ -280,3 +280,78 @@ html.reveal-ready .reveal-wipe.in-view .reveal-wipe-text {
     text-shadow: 0 0 28px rgba(255, 215, 0, 0.7), 0 0 8px rgba(255, 215, 0, 0.9) !important;
   }
 }
+
+/*
+ * Safety net: if the JS bundle never runs (fails to load, errors out before
+ * hydration, etc.), the inline reveal-gate script in the root layout adds
+ * this class 3s after first paint regardless, forcing every reveal visible.
+ */
+html.reveal-done .reveal-slam,
+html.reveal-done .reveal-fade-up,
+html.reveal-done .reveal-wipe,
+html.reveal-done .reveal-wipe-text {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: inset(0 0 0 0) !important;
+}
+
+/*
+ * ── Hero intro: pure CSS keyframes, no JS ──
+ * The hero is on screen at first paint, so a JS-driven reveal (which can only
+ * apply its hidden start state after hydration) causes a visible flash and
+ * can land the hidden + in-view classes in the same frame, skipping the
+ * transition entirely. Keyframe animations apply from the very first paint
+ * instead, with no such race.
+ */
+@keyframes hero-slam {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hero-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-slam {
+  display: inline-block;
+  opacity: 1;
+  animation: hero-slam 180ms ease-out both;
+}
+
+.hero-wipe-plate {
+  clip-path: inset(0);
+  animation: hero-wipe 200ms ease-out 120ms both;
+}
+
+.hero-wipe-text {
+  opacity: 1;
+  animation: hero-fade 160ms ease-out 330ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slam,
+  .hero-wipe-plate,
+  .hero-wipe-text {
+    animation: none;
+  }
+}

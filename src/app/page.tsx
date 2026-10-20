@@ -107,11 +107,9 @@ export default function Home() {
                 color: "var(--color-white)",
               }}
             >
-              <Reveal as="span" variant="slam">
-                OFC ON
-              </Reveal>
-              <GoldPlate
-                delayMs={120}
+              <span className="hero-slam">OFC ON</span>
+              <span
+                className="hero-wipe-plate"
                 style={{
                   fontSize: "0.725em",
                   lineHeight: 1.2,
@@ -123,8 +121,8 @@ export default function Home() {
                   color: "var(--color-gold-ink)",
                 }}
               >
-                STEROIDS
-              </GoldPlate>
+                <span className="hero-wipe-text">STEROIDS</span>
+              </span>
             </h1>
             <Reveal as="p" variant="fade-up" style={{ margin: 0, maxWidth: "34em", fontSize: 19, lineHeight: 1.55, color: "var(--color-body)" }}>
               The OFC you know, played with your own crew. Plus twists you won&rsquo;t find

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Anton } from "next/font/google";
 import Link from "next/link";
+import Script from "next/script";
 import Header from "@/components/Header";
-import RevealReady from "@/components/RevealReady";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
+
+// Arms the one-shot scroll reveals before first paint (no flash of a
+// hidden-then-shown state), and skips them under prefers-reduced-motion.
+// `reveal-done` is a pure-CSS safety net: if the React bundle never runs,
+// every reveal is forced visible 3s after load regardless.
+const REVEAL_GATE_SCRIPT = `(function(){try{if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("reveal-ready");}}catch(e){}try{setTimeout(function(){document.documentElement.classList.add("reveal-done");},3000);}catch(e){}})();`;
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -44,9 +50,14 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${dmSans.variable} ${dmMono.variable} ${anton.variable}`}
+      suppressHydrationWarning
     >
       <body className="antialiased">
-        <RevealReady />
+        <Script
+          id="reveal-gate"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: REVEAL_GATE_SCRIPT }}
+        />
         <Header />
         {children}
         <footer
