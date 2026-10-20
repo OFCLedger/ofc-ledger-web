@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useRef, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+
+declare global {
+  interface Window {
+    __revealLive?: boolean;
+  }
+}
 
 // Ignore the bottom 20% of the viewport as a trigger zone, and require either
 // 30% of the element's own area to be visible inside it, or — for elements
@@ -70,6 +76,13 @@ export function useInViewOnce<T extends HTMLElement>() {
   const getServerSnapshot = useCallback(() => false, []);
 
   const inView = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+  // Tells the inline reveal-gate script (see root layout) that the reveal
+  // system actually initialised, so its 3s safety net doesn't fire and
+  // freeze every reveal into place while the page is still being scrolled.
+  useEffect(() => {
+    window.__revealLive = true;
+  }, []);
 
   return { ref, inView };
 }

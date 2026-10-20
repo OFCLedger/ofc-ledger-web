@@ -266,12 +266,21 @@ html.reveal-ready .reveal-wipe.in-view .reveal-wipe-text {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /*
+   * clip-path belongs to .reveal-wipe alone. It crops rendering to the
+   * element's exact box — on .reveal-slam (notably the x8 multiplier) that
+   * also hard-crops the text-shadow glow into a square instead of letting it
+   * blur outward, so it must never be set here.
+   */
   .reveal-slam,
   .reveal-fade-up,
-  .reveal-wipe,
   .reveal-wipe-text {
     opacity: 1 !important;
     transform: none !important;
+    transition: none !important;
+  }
+
+  .reveal-wipe {
     clip-path: inset(0 0 0 0) !important;
     transition: none !important;
   }
@@ -282,16 +291,19 @@ html.reveal-ready .reveal-wipe.in-view .reveal-wipe-text {
 }
 
 /*
- * Safety net: if the JS bundle never runs (fails to load, errors out before
- * hydration, etc.), the inline reveal-gate script in the root layout adds
- * this class 3s after first paint regardless, forcing every reveal visible.
+ * Safety net: if the JS bundle never initialises (fails to load, errors out
+ * before hydration, etc.), the inline reveal-gate script in the root layout
+ * adds this class 3s after first paint, forcing every reveal visible. Same
+ * clip-path restriction as above applies here.
  */
 html.reveal-done .reveal-slam,
 html.reveal-done .reveal-fade-up,
-html.reveal-done .reveal-wipe,
 html.reveal-done .reveal-wipe-text {
   opacity: 1 !important;
   transform: none !important;
+}
+
+html.reveal-done .reveal-wipe {
   clip-path: inset(0 0 0 0) !important;
 }
 
