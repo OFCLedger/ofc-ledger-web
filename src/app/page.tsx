@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 import GoldPlate from "@/components/GoldPlate";
 import SpadesMultiplier from "@/components/SpadesMultiplier";
 import ParallaxFrame from "@/components/ParallaxFrame";
-import HeroPhoneVideo from "@/components/HeroPhoneVideo";
+import FilmCard from "@/components/FilmCard";
 
 const GOOGLE_PLAY_URL =
   "https://play.google.com/store/apps/details?id=com.ofcledger.OFCScorekeeper";
@@ -144,45 +144,14 @@ export default function Home() {
             }}
           >
             <div className="phone-glow" aria-hidden="true" />
-            <ParallaxFrame
-              baseRotateDeg={-4}
-              className="phone-frame"
-              style={{
-                width: "min(340px, 82vw)",
-                aspectRatio: "1440 / 3168",
-                background: "#0a0d0c",
-                border: "3px solid #8a8f97",
-                borderRadius: 46,
-                padding: 10,
-                boxSizing: "border-box",
-                boxShadow: "0 40px 90px rgba(0,0,0,0.55)",
-              }}
-            >
-              <HeroPhoneVideo
-                style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 36, display: "block" }}
+            <ParallaxFrame baseRotateDeg={0}>
+              <FilmCard
+                webmSrc="/home/films/spades.webm"
+                mp4Src="/home/films/spades.mp4"
+                poster="/home/films/spades-poster.jpg"
+                preload="metadata"
               />
             </ParallaxFrame>
-            <div
-              style={{
-                position: "absolute",
-                zIndex: 2,
-                left: "calc(50% - 470px)",
-                top: "14%",
-                width: "min(380px, 70vw)",
-                borderRadius: 18,
-                overflow: "hidden",
-                boxShadow: "0 0 0 3px #ffd700, 0 0 60px rgba(255,215,0,0.45), 0 24px 50px rgba(0,0,0,0.5)",
-                transform: "rotate(2deg)",
-              }}
-            >
-              <Image
-                src="/home/bonus-x8.jpg"
-                alt="Hand summary showing Bonus: x8"
-                width={900}
-                height={188}
-                style={{ width: "100%", height: "auto", display: "block" }}
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -260,34 +229,12 @@ export default function Home() {
 
           {/* Jokers */}
           <div style={{ display: "flex", flexWrap: "wrap-reverse", alignItems: "center", gap: 56 }}>
-            <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", justifyContent: "center", gap: 20 }}>
-              <Image
-                src="/home/joker-picker.jpg"
-                alt="Select Card for Joker picker, 6 of clubs selected"
-                width={720}
-                height={1584}
-                style={{
-                  width: "46%",
-                  maxWidth: 250,
-                  height: "auto",
-                  borderRadius: 28,
-                  border: "3px solid #8a8f97",
-                  transform: "rotate(-3deg)",
-                }}
-              />
-              <Image
-                src="/home/straight-flush.jpg"
-                alt="The joker played as 6 of clubs, completing a straight flush"
-                width={720}
-                height={1584}
-                style={{
-                  width: "46%",
-                  maxWidth: 250,
-                  height: "auto",
-                  borderRadius: 28,
-                  border: "3px solid #8a8f97",
-                  transform: "rotate(3deg) translateY(28px)",
-                }}
+            <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", justifyContent: "center" }}>
+              <FilmCard
+                webmSrc="/home/films/joker.webm"
+                mp4Src="/home/films/joker.mp4"
+                poster="/home/films/joker-poster.jpg"
+                preload="none"
               />
             </div>
             <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", flexDirection: "column", gap: 18 }}>

@@ -16,6 +16,8 @@
   --hero-copy-gap: 28px;
   --hero-row-gap: 56px;
   --hero-h1-size: clamp(96px, 11vw, 176px);
+
+  --film-width: clamp(280px, 30vw, 400px);
 }
 
 @media (max-width: 640px) {
@@ -25,6 +27,8 @@
     --hero-copy-gap: 14px;
     --hero-row-gap: 20px;
     --hero-h1-size: clamp(60px, 17vw, 88px);
+
+    --film-width: clamp(280px, 78vw, 400px);
   }
 }
 
@@ -176,6 +180,37 @@ h1, h2, h3, h4, h5, h6 {
 .phone-frame {
   position: relative;
   z-index: 1;
+}
+
+/* ── Promo film card (9:16, phone already rendered inside the film) ── */
+.film-card {
+  position: relative;
+  z-index: 1;
+  width: var(--film-width);
+  aspect-ratio: 9 / 16;
+  border-radius: 28px;
+  border: 1px solid #1f3a2e;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  background: #0a0d0c;
+}
+
+.film-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-gold-ink);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Rule cards: hover lift ── */
