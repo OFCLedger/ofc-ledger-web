@@ -17,7 +17,7 @@
   --hero-row-gap: 56px;
   --hero-h1-size: clamp(96px, 11vw, 176px);
 
-  --film-width: clamp(280px, 30vw, 400px);
+  --film-width: clamp(320px, 38vw, 520px);
 }
 
 @media (max-width: 640px) {
@@ -28,7 +28,7 @@
     --hero-row-gap: 20px;
     --hero-h1-size: clamp(60px, 17vw, 88px);
 
-    --film-width: clamp(280px, 78vw, 400px);
+    --film-width: clamp(320px, 92vw, 520px);
   }
 }
 
@@ -182,20 +182,20 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 1;
 }
 
-/* ── Promo film card (9:16, phone already rendered inside the film) ── */
-.film-card {
+/*
+ * ── Promo film (transparent alpha video, no plate) ──
+ * No background, border, radius or shadow here on purpose: the film already
+ * renders its own 3D phone with a transparent background, so it must sit
+ * directly on the section background with nothing visible around it.
+ */
+.promo-film {
   position: relative;
   z-index: 1;
   width: var(--film-width);
-  aspect-ratio: 9 / 16;
-  border-radius: 28px;
-  border: 1px solid #1f3a2e;
-  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
-  overflow: hidden;
-  background: #0a0d0c;
+  aspect-ratio: 4 / 5;
 }
 
-.film-play-button {
+.promo-film-play-button {
   position: absolute;
   top: 50%;
   left: 50%;

@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 import GoldPlate from "@/components/GoldPlate";
 import SpadesMultiplier from "@/components/SpadesMultiplier";
 import ParallaxFrame from "@/components/ParallaxFrame";
-import FilmCard from "@/components/FilmCard";
+import PromoFilm from "@/components/PromoFilm";
 
 const GOOGLE_PLAY_URL =
   "https://play.google.com/store/apps/details?id=com.ofcledger.OFCScorekeeper";
@@ -145,10 +145,10 @@ export default function Home() {
           >
             <div className="phone-glow" aria-hidden="true" />
             <ParallaxFrame baseRotateDeg={0}>
-              <FilmCard
+              <PromoFilm
                 webmSrc="/home/films/spades.webm"
-                mp4Src="/home/films/spades.mp4"
-                poster="/home/films/spades-poster.jpg"
+                hevcSrc="/home/films/spades-hevc.mov"
+                poster="/home/films/spades-poster.png"
                 preload="metadata"
               />
             </ParallaxFrame>
@@ -230,10 +230,10 @@ export default function Home() {
           {/* Jokers */}
           <div style={{ display: "flex", flexWrap: "wrap-reverse", alignItems: "center", gap: 56 }}>
             <div style={{ flex: "1 1 440px", minWidth: 0, display: "flex", justifyContent: "center" }}>
-              <FilmCard
+              <PromoFilm
                 webmSrc="/home/films/joker.webm"
-                mp4Src="/home/films/joker.mp4"
-                poster="/home/films/joker-poster.jpg"
+                hevcSrc="/home/films/joker-hevc.mov"
+                poster="/home/films/joker-poster.png"
                 preload="none"
               />
             </div>
