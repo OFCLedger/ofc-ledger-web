@@ -63,9 +63,9 @@ export function comparePairDetailed(
   const p2STM = stmActive && !p2Foul && !!p2.analysis.shootingTheMoon && (stmInFL || !p2WasInFL);
 
   if (p1STM || p2STM) {
-    if (p1STM && p2STM) return { label: "MOON", h2h: 0, royaltyContribution: 0 };
+    if (p1STM && p2STM) return { label: "STM", h2h: 0, royaltyContribution: 0 };
     const raw = p1STM ? stmPoints : -stmPoints;
-    return { label: "MOON", h2h: raw * mult, royaltyContribution: 0 };
+    return { label: "STM", h2h: raw * mult, royaltyContribution: 0 };
   }
 
   // One-sided foul — fixed 6-point scoop plus the live player's royalties.
