@@ -26,6 +26,10 @@ export interface PairResult {
   label: string;
   h2h: number;
   royaltyContribution: number;
+  // Each player's own multiplier in the pair, for formatMultiplierText.
+  // Empty when the result between the pair is a fixed 0 (both foul, or
+  // both Shooting the Moon) — same rule as app/results.tsx's vsResults.
+  factors: number[];
 }
 
 /**
@@ -42,7 +46,7 @@ export function comparePairDetailed(
   stmInFL: boolean = false
 ): PairResult {
   if (!p1?.analysis || !p2?.analysis) {
-    return { label: "-", h2h: 0, royaltyContribution: 0 };
+    return { label: "-", h2h: 0, royaltyContribution: 0, factors: [] };
   }
 
   const p1Foul = p1.analysis.isFoul;
@@ -50,10 +54,11 @@ export function comparePairDetailed(
   const m1 = p1.analysis.multiplier || 1;
   const m2 = p2.analysis.multiplier || 1;
   const mult = m1 * m2;
+  const factors = [m1, m2];
 
   // Both foul — nobody wins.
   if (p1Foul && p2Foul) {
-    return { label: "FOUL", h2h: 0, royaltyContribution: 0 };
+    return { label: "FOUL", h2h: 0, royaltyContribution: 0, factors: [] };
   }
 
   // Shooting the Moon override — trumps hand-vs-hand and royalties entirely.
@@ -63,9 +68,9 @@ export function comparePairDetailed(
   const p2STM = stmActive && !p2Foul && !!p2.analysis.shootingTheMoon && (stmInFL || !p2WasInFL);
 
   if (p1STM || p2STM) {
-    if (p1STM && p2STM) return { label: "STM", h2h: 0, royaltyContribution: 0 };
+    if (p1STM && p2STM) return { label: "STM", h2h: 0, royaltyContribution: 0, factors: [] };
     const raw = p1STM ? stmPoints : -stmPoints;
-    return { label: "STM", h2h: raw * mult, royaltyContribution: 0 };
+    return { label: "STM", h2h: raw * mult, royaltyContribution: 0, factors };
   }
 
   // One-sided foul — fixed 6-point scoop plus the live player's royalties.
@@ -74,6 +79,7 @@ export function comparePairDetailed(
       label: "FOUL",
       h2h: -6 * mult,
       royaltyContribution: -p2.analysis.royalties * mult,
+      factors,
     };
   }
   if (!p1Foul && p2Foul) {
@@ -81,6 +87,7 @@ export function comparePairDetailed(
       label: "SCOOP",
       h2h: 6 * mult,
       royaltyContribution: p1.analysis.royalties * mult,
+      factors,
     };
   }
 
@@ -109,6 +116,7 @@ export function comparePairDetailed(
     label,
     h2h: score * mult,
     royaltyContribution: (p1.analysis.royalties - p2.analysis.royalties) * mult,
+    factors,
   };
 }
 

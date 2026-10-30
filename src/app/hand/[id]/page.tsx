@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { analyzeHand } from "@/lib/scoring";
 import { comparePairDetailed } from "@/lib/comparePlayers";
+import { formatMultiplierText } from "@/lib/multiplierText";
 
 /* ── Types ── */
 
@@ -118,6 +119,7 @@ interface PairH2H {
   label: string;
   h2h: number;
   royaltyContribution: number;
+  multiplierText: string | null;
 }
 
 function computePairH2H(
@@ -127,14 +129,20 @@ function computePairH2H(
   stmPoints: number,
   stmInFL: boolean
 ): PairH2H {
-  const { label, h2h, royaltyContribution } = comparePairDetailed(
+  const { label, h2h, royaltyContribution, factors } = comparePairDetailed(
     me,
     opp,
     stmActive,
     stmPoints,
     stmInFL
   );
-  return { opponentName: opp.player, label, h2h, royaltyContribution };
+  return {
+    opponentName: opp.player,
+    label,
+    h2h,
+    royaltyContribution,
+    multiplierText: formatMultiplierText(factors),
+  };
 }
 
 /* ── Format score with sign ── */
@@ -516,10 +524,15 @@ export default function HandPage() {
                   {pairs.length > 0 && (
                     <div className="mt-1 flex flex-col gap-0.5 font-[family-name:var(--font-dm-mono)] text-[11px]">
                       {pairs.map((pair, i) => (
-                        <div key={i} className="flex items-center gap-1.5">
+                        <div key={i} className="flex flex-wrap items-center gap-1.5">
                           <span style={{ color: "#a3c2b0" }}>
                             vs {pair.opponentName}:
                           </span>
+                          {pair.multiplierText && (
+                            <span style={{ color: "#a3c2b0", fontWeight: "normal" }}>
+                              [{pair.multiplierText}]
+                            </span>
+                          )}
                           <span style={{ color: "#ffd700" }}>
                             {pair.label}
                           </span>
