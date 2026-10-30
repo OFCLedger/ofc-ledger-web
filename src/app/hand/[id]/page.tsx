@@ -477,7 +477,9 @@ export default function HandPage() {
             badges.push({ label: `FL${cards}`, bg: "#444" });
           }
           if (orig.choice?.hasAbility) {
-            badges.push({ label: "TC", bg: "#0066cc" });
+            // Same grey as the FL badge — app/results.tsx uses one shared
+            // statusPill style (#444) for both, never a distinct color for TC.
+            badges.push({ label: "TC", bg: "#444" });
           }
 
           return (
