@@ -101,6 +101,15 @@ function parseCard(str: string) {
 
 /* ── Pairwise head-to-head ── */
 
+// Each player's Spades Multiplier applies to the match independently —
+// the pair's multiplier is the product (m1 * m2), not the larger of the
+// two. With a single deck only one player can ever hold the bonus ♠2, so
+// max(m, 1) === m * 1 and the distinction is invisible; Double Decker (two
+// decks) lets two players hold it at once, where max() under-multiplies.
+function pairMultiplier(m1: number, m2: number): number {
+  return (m1 || 1) * (m2 || 1);
+}
+
 interface PairH2H {
   opponentName: string;
   label: string;
@@ -110,7 +119,7 @@ interface PairH2H {
 function computePairH2H(me: PlayerData, opp: PlayerData): PairH2H {
   const myFoul = me.analysis.isFoul;
   const oppFoul = opp.analysis.isFoul;
-  const pairMult = Math.max(me.analysis.multiplier || 1, opp.analysis.multiplier || 1);
+  const pairMult = pairMultiplier(me.analysis.multiplier || 1, opp.analysis.multiplier || 1);
 
   if (myFoul && oppFoul) {
     return { opponentName: opp.player, label: "FOUL", h2h: 0 };
@@ -438,7 +447,7 @@ export default function HandPage() {
             .filter((_, i) => i !== idx)
             .reduce((sum, opp) => {
               const oppMult = opp.analysis.multiplier || 1;
-              const pairMult = Math.max(myMult, oppMult);
+              const pairMult = pairMultiplier(myMult, oppMult);
               const oppRoy = opp.analysis.isFoul ? 0 : opp.analysis.royalties;
               return sum + (effectiveRoy - oppRoy) * pairMult;
             }, 0);
