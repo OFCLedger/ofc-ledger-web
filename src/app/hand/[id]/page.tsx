@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { analyzeHand } from "@/lib/scoring";
+import { comparePairDetailed } from "@/lib/comparePlayers";
 
 /* ── Types ── */
 
@@ -20,6 +21,13 @@ interface PlayerAnalysis {
   royalties: number;
   multiplier: number;
   bonusMessage: string | null;
+  shootingTheMoon?: boolean;
+}
+
+interface HandRules {
+  shootingTheMoon?: boolean;
+  stmPoints?: number;
+  stmInFL?: boolean;
 }
 
 interface PlayerData {
@@ -101,51 +109,32 @@ function parseCard(str: string) {
 
 /* ── Pairwise head-to-head ── */
 
-// Each player's Spades Multiplier applies to the match independently —
-// the pair's multiplier is the product (m1 * m2), not the larger of the
-// two. With a single deck only one player can ever hold the bonus ♠2, so
-// max(m, 1) === m * 1 and the distinction is invisible; Double Decker (two
-// decks) lets two players hold it at once, where max() under-multiplies.
-function pairMultiplier(m1: number, m2: number): number {
-  return (m1 || 1) * (m2 || 1);
-}
-
+// Delegates to the ported comparePairDetailed/comparePlayers
+// (src/lib/comparePlayers.ts), which mirrors the app/server's
+// comparePlayers() exactly — multiplier product, foul, scoop, Shooting
+// the Moon override, royalties. See that module for the real logic.
 interface PairH2H {
   opponentName: string;
   label: string;
   h2h: number;
+  royaltyContribution: number;
 }
 
-function computePairH2H(me: PlayerData, opp: PlayerData): PairH2H {
-  const myFoul = me.analysis.isFoul;
-  const oppFoul = opp.analysis.isFoul;
-  const pairMult = pairMultiplier(me.analysis.multiplier || 1, opp.analysis.multiplier || 1);
-
-  if (myFoul && oppFoul) {
-    return { opponentName: opp.player, label: "FOUL", h2h: 0 };
-  }
-  if (myFoul) {
-    return { opponentName: opp.player, label: "FOUL", h2h: -6 * pairMult };
-  }
-  if (oppFoul) {
-    return { opponentName: opp.player, label: "SCOOP", h2h: 6 * pairMult };
-  }
-
-  const rows = ["top", "mid", "bot"] as const;
-  let wins = 0;
-  let losses = 0;
-  for (const r of rows) {
-    const myVal = me.analysis.details[r].rankValue;
-    const oppVal = opp.analysis.details[r].rankValue;
-    if (myVal > oppVal) wins++;
-    else if (oppVal > myVal) losses++;
-  }
-
-  const scoop = wins === 3 ? 3 : losses === 3 ? -3 : 0;
-  const h2h = ((wins - losses) + scoop) * pairMult;
-  const label = wins === 3 ? "SCOOP" : `${wins}\u2013${losses}`;
-
-  return { opponentName: opp.player, label, h2h };
+function computePairH2H(
+  me: PlayerData,
+  opp: PlayerData,
+  stmActive: boolean,
+  stmPoints: number,
+  stmInFL: boolean
+): PairH2H {
+  const { label, h2h, royaltyContribution } = comparePairDetailed(
+    me,
+    opp,
+    stmActive,
+    stmPoints,
+    stmInFL
+  );
+  return { opponentName: opp.player, label, h2h, royaltyContribution };
 }
 
 /* ── Format score with sign ── */
@@ -278,6 +267,10 @@ export default function HandPage() {
 
   const [originalPlayers, setOriginalPlayers] = useState<PlayerData[]>([]);
   const [scores, setScores] = useState<Record<string, number> | null>(null);
+  // Only present when the app saves it at share time (see src/lib/comparePlayers.ts
+  // header comment). Missing on older shares and on shares from the results screen —
+  // treat as "Shooting the Moon off" rather than guessing.
+  const [handRules, setHandRules] = useState<HandRules | null>(null);
   const [replayData, setReplayData] = useState<ReplaySnapshot[] | null>(null);
   const [replayRound, setReplayRound] = useState(-1);
   const [loading, setLoading] = useState(true);
@@ -303,9 +296,11 @@ export default function HandPage() {
       const raw = hand.hand_data;
       const players: PlayerData[] = Array.isArray(raw) ? raw : (raw?.hands || []);
       const scoresData: Record<string, number> | null = Array.isArray(raw) ? null : (raw?.scores || null);
+      const rulesData: HandRules | null = Array.isArray(raw) ? null : (raw?.rules || null);
 
       setOriginalPlayers(players);
       setScores(scoresData);
+      setHandRules(rulesData);
 
       // Source 1: replay_data embedded in hand_data (shared from play.tsx review mode)
       let rd: ReplaySnapshot[] | null = null;
@@ -343,6 +338,12 @@ export default function HandPage() {
     () => originalPlayers.some((p) => (p.analysis?.multiplier || 1) > 1),
     [originalPlayers]
   );
+
+  // Shooting the Moon is a table rule, not a per-hand fact — only score with
+  // it when the share actually carried the rule settings.
+  const stmActive = !!handRules?.shootingTheMoon;
+  const stmPoints = handRules?.stmPoints ?? 20;
+  const stmInFL = handRules?.stmInFL ?? false;
 
   const totalSnapshots = replayData?.length || 0;
   const isReplayAvailable = totalSnapshots > 1;
@@ -435,27 +436,24 @@ export default function HandPage() {
 
           const pairs = originalPlayers
             .filter((_, i) => i !== idx)
-            .map((opp) => computePairH2H(orig, opp));
+            .map((opp) => computePairH2H(orig, opp, stmActive, stmPoints, stmInFL));
           const totalH2H = pairs.reduce((sum, p) => sum + p.h2h, 0);
+          const netRoy = pairs.reduce((sum, p) => sum + p.royaltyContribution, 0);
+          const computedTotal = totalH2H + netRoy;
 
           const origD = orig.analysis.details;
           const bruttoRoyalties =
             (origD?.top?.pts || 0) + (origD?.mid?.pts || 0) + (origD?.bot?.pts || 0);
-          const effectiveRoy = origFoul ? 0 : orig.analysis.royalties;
-          const myMult = orig.analysis.multiplier || 1;
-          const netRoy = originalPlayers
-            .filter((_, i) => i !== idx)
-            .reduce((sum, opp) => {
-              const oppMult = opp.analysis.multiplier || 1;
-              const pairMult = pairMultiplier(myMult, oppMult);
-              const oppRoy = opp.analysis.isFoul ? 0 : opp.analysis.royalties;
-              return sum + (effectiveRoy - oppRoy) * pairMult;
-            }, 0);
 
-          const score =
-            scores && scores[orig.player] != null
-              ? scores[orig.player]
-              : totalH2H + netRoy;
+          const storedTotal =
+            scores && scores[orig.player] != null ? scores[orig.player] : null;
+          if (storedTotal != null && Math.abs(storedTotal - computedTotal) > 1e-6) {
+            console.warn(
+              `[hand/${id}] recomputed score for "${orig.player}" (${computedTotal}) does not match the stored score (${storedTotal}).`
+            );
+          }
+
+          const score = storedTotal != null ? storedTotal : computedTotal;
           const scoreColor =
             score > 0
               ? "#4caf50"
