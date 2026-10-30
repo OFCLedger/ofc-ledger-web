@@ -110,7 +110,7 @@ export function comparePairDetailed(
   if (p1Wins === 3) score += 3;
   if (p2Wins === 3) score -= 3;
 
-  const label = p1Wins === 3 ? "SCOOP" : `${p1Wins}–${p2Wins}`;
+  const label = p1Wins === 3 ? "SCOOP" : `${p1Wins}-${p2Wins}`;
 
   return {
     label,
