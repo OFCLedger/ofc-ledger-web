@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { analyzeHand } from "@/lib/scoring";
-import { comparePairDetailed } from "@/lib/comparePlayers";
+import { comparePairDetailed, isShootingTheMoon } from "@/lib/comparePlayers";
 import { formatMultiplierText } from "@/lib/multiplierText";
 
 /* ── Types ── */
@@ -482,6 +482,13 @@ export default function HandPage() {
             badges.push({ label: "TC", bg: "#444" });
           }
 
+          // Same check comparePairDetailed uses to trigger the Shooting the
+          // Moon override (src/lib/comparePlayers.ts) — the badge can never
+          // disagree with the score. stmActive is already false when
+          // hand_data has no rules (older shares), so no separate
+          // "is data missing" check is needed here.
+          const hasSTM = isShootingTheMoon(orig, stmActive, stmInFL);
+
           return (
             <div key={idx} className="rounded-[14px] bg-black/20 p-4">
               {/* Player header */}
@@ -494,28 +501,37 @@ export default function HandPage() {
                     {badges.map((b, i) => (
                       <span
                         key={i}
-                        className="text-[10px] font-semibold text-white"
+                        className="text-[10px] font-bold text-white"
                         style={{
                           backgroundColor: b.bg,
-                          borderRadius: 20,
-                          padding: "2px 7px",
-                          letterSpacing: "0.5px",
+                          borderRadius: 4,
+                          padding: "2px 6px",
                         }}
                       >
                         {b.label}
                       </span>
                     ))}
+                    {hasSTM && (
+                      <span
+                        className="text-[10px] font-bold text-white"
+                        style={{
+                          backgroundColor: "#6a1b9a",
+                          borderRadius: 4,
+                          padding: "2px 6px",
+                        }}
+                      >
+                        {"\u{1F319} STM"}
+                      </span>
+                    )}
                     {orig.analysis.multiplier > 1 &&
                       orig.analysis.bonusMessage && (
                         <span
-                          className="text-[10px] font-semibold"
+                          className="text-[10px] font-bold"
                           style={{
-                            background: "rgba(255,215,0,0.12)",
-                            border: "1px solid rgba(255,215,0,0.3)",
-                            borderRadius: 20,
-                            padding: "2px 8px",
-                            color: "#ffd700",
-                            letterSpacing: "0.5px",
+                            backgroundColor: "#ffd700",
+                            borderRadius: 4,
+                            padding: "2px 6px",
+                            color: "#1a1a1a",
                           }}
                         >
                           {orig.analysis.bonusMessage}

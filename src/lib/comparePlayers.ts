@@ -33,6 +33,24 @@ export interface PairResult {
 }
 
 /**
+ * Mirrors the per-player Shooting the Moon check inside comparePlayers()
+ * (p1STM/p2STM in scoring.ts): active rule, this hand actually shot the
+ * moon, not fouled, and either the rule allows it during Fantasy Land or
+ * this player wasn't in FL this hand. Shared by comparePairDetailed below
+ * and by the hand/[id] page's "🌙 STM" pill, so the badge can never
+ * disagree with the score it's describing.
+ */
+export function isShootingTheMoon(
+  p: PairPlayer,
+  stmActive: boolean,
+  stmInFL: boolean
+): boolean {
+  if (!p?.analysis) return false;
+  const wasInFL = !!(p.fantasyLandState?.isActive || p.fantasyLand?.isActive);
+  return stmActive && !p.analysis.isFoul && !!p.analysis.shootingTheMoon && (stmInFL || !wasInFL);
+}
+
+/**
  * Same branching as comparePlayers() in scoring.ts, but splits the net
  * score into the hand-vs-hand component and the royalty component so the
  * UI can keep showing them on separate lines. h2h + royaltyContribution
@@ -62,10 +80,8 @@ export function comparePairDetailed(
   }
 
   // Shooting the Moon override — trumps hand-vs-hand and royalties entirely.
-  const p1WasInFL = !!(p1.fantasyLandState?.isActive || p1.fantasyLand?.isActive);
-  const p2WasInFL = !!(p2.fantasyLandState?.isActive || p2.fantasyLand?.isActive);
-  const p1STM = stmActive && !p1Foul && !!p1.analysis.shootingTheMoon && (stmInFL || !p1WasInFL);
-  const p2STM = stmActive && !p2Foul && !!p2.analysis.shootingTheMoon && (stmInFL || !p2WasInFL);
+  const p1STM = isShootingTheMoon(p1, stmActive, stmInFL);
+  const p2STM = isShootingTheMoon(p2, stmActive, stmInFL);
 
   if (p1STM || p2STM) {
     if (p1STM && p2STM) return { label: "STM", h2h: 0, royaltyContribution: 0, factors: [] };
