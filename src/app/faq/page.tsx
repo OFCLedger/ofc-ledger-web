@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "How do I activate squeeze?",
-    a: "Enable 4-color deck in Preferences from the home screen. Then press and hold a face-down card to squeeze it.",
+    a: "Enable Deal Face Down in Preferences from the home screen. Then press and hold a face-down card to peel back its corner and squeeze it.",
   },
   {
     q: "What happens if I don't place my cards in time?",
